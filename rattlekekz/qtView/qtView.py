@@ -40,10 +40,9 @@ from rattlekekz.qtView.tabmanagement import TabManager
 rev=search("\d+",revision).group()
 
 class View(TabManager,iterator):
-    def __init__(self,controller, *args, **kwds):
+    def __init__(self,controller):
         self.name,self.version="rattlekekz","0.1 Nullpointer Exception"  # Diese Variablen werden vom View abgefragt
         self.controller=controller
-        self.kwds=kwds# List of Arguments e.g. if Userlist got colors.
         self.revision=rev
         TabManager.__init__(self)
         self.blubb=lambda x:chr(ord(x)-43)
@@ -98,8 +97,11 @@ class View(TabManager,iterator):
         self.main.connect(self.main,QtCore.SIGNAL("closed()"),self.quit)
 
     def closeTab(self,integer):
-        self.tabs.removeTab(integer)
-        del self.lookupRooms[0]
+        if isinstance(self.tabs.widget(integer),rattlekekzMsgTab):
+            self.sendStr(self.stringHandler(self.tabs.tabText(integer)),"/part")
+        else:
+            self.tabs.removeTab(integer)
+            del self.lookupRooms[0]
 
     def quit(self):
         self.iterPlugins('quitConnection')
@@ -275,7 +277,7 @@ class View(TabManager,iterator):
         pass
 
     def printMsg(self,room,msg):
-        print "<%s> %s" % (room,"".join(msg))
+        print "<%s> %s" % (self.stringHandler(room),"".join(self.stringHandler(msg)))
         self.getTab(room).addLine("".join(msg))
 
     def gotException(self, message):
