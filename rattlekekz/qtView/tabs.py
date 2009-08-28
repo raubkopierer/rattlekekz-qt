@@ -139,12 +139,14 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         class QLineEdit(QtGui.QLineEdit):
             def event(self,event):
-                event.setAccepted(True)
+                #event.setAccepted(True)
                 if event.type() != QtCore.QEvent.KeyPress:
                     return QtGui.QLineEdit.event(self,event)
                 elif QtCore.Qt.Key_Backtab != event.key() != QtCore.Qt.Key_Tab:
+                    event.setAccepted(True)
                     return self.keyPressEvent(event)
                 elif event.key() == QtCore.Qt.Key_Tab:
+                    event.setAccepted(True)
                     self.emit(QtCore.SIGNAL("tabPressed()"))
                     return True
         Box2.addWidget(QLineEdit())
