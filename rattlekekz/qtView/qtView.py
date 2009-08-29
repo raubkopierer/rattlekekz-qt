@@ -318,6 +318,12 @@ class View(TabManager,iterator):
     def receivedInformation(self,info):
         pass
 
+    def minorInfo(self,message):
+        if len(self.lookupRooms)==1:
+            self.addTab("$infos",rattlekekzInfoTab)
+            self.changeTab("$infos")
+        self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
+
     def receivedWhois(self,nick,array):
         pass
 
