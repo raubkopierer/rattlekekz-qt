@@ -93,6 +93,7 @@ class View(TabManager,iterator):
         self.tabs=self.main.centralWidget()
         self.tabs.setMovable(True)
         self.tabs.setTabsClosable(True)
+        self.tabs.setMinimumSize(400,350)
         self.main.connect(self.tabs,QtCore.SIGNAL("tabCloseRequested(int)"),self.closeTab)
         self.main.connect(self.main,QtCore.SIGNAL("closed()"),self.quit)
 

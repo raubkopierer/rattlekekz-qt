@@ -39,7 +39,9 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         Form.addRow("Nickname",QtGui.QLineEdit())
         Form.addRow("Password",QtGui.QLineEdit())
         Form.addRow("Rooms",QtGui.QLineEdit())
-        Form.addRow(QtGui.QPushButton("&Login"),QtGui.QPushButton("&Register"))
+        Form.addRow(QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight))
+        Form.itemAt(6).layout().addWidget(QtGui.QPushButton("&Login"))
+        Form.itemAt(6).layout().addWidget(QtGui.QPushButton("&Register"))
         self.Box.addLayout(Form)
         self.roomView = self.Box.itemAt(0).widget()
         self.roomView.setModel(QtGui.QStringListModel())
@@ -47,12 +49,13 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         self.roomView.setSelectionMode(self.roomView.NoSelection)
         self.roomView.setDragDropMode(self.roomView.NoDragDrop)
         self.roomView.setAlternatingRowColors(True)
+        self.roomView.setFixedWidth(140)
         self.roomList = self.Box.itemAt(0).widget().model() # QStringListModel
         self.nickInput = self.Box.itemAt(1).layout().itemAt(1).widget() # QLineEdit
         self.passInput = self.Box.itemAt(1).layout().itemAt(3).widget() # QLineEdit
         self.roomInput = self.Box.itemAt(1).layout().itemAt(5).widget() # QLineEdit
-        self.loginButton = self.Box.itemAt(1).layout().itemAt(6).widget() # QPushButton
-        self.registerButton = self.Box.itemAt(1).layout().itemAt(7).widget() # QPushButton
+        self.loginButton = self.Box.itemAt(1).layout().itemAt(6).layout().itemAt(0).widget() # QPushButton
+        self.registerButton = self.Box.itemAt(1).layout().itemAt(6).layout().itemAt(1).widget() # QPushButton
         self.passInput.setEchoMode(QtGui.QLineEdit.Password)
         self.loginButton.setDisabled(True)
         self.connect(self.loginButton,QtCore.SIGNAL("clicked()"),self.sendLogin)
@@ -85,6 +88,8 @@ class rattlekekzRegTab(rattlekekzBaseTab):
         self.nickInput = self.Form.itemAt(1).widget() # QLineEdit
         self.passwordInput = self.Form.itemAt(3).widget() # QLineEdit
         self.passwordCheck = self.Form.itemAt(5).widget() # QLineEdit
+        self.passwordInput.setEchoMode(QtGui.QLineEdit.Password)
+        self.passwordCheck.setEchoMode(QtGui.QLineEdit.Password)
         self.mailInput = self.Form.itemAt(7).widget() # QLineEdit
         self.registerButton = self.Form.itemAt(8).widget() # QPushButton
         self.connect(self.registerButton,QtCore.SIGNAL("clicked()"),self.registerNick)
@@ -159,17 +164,13 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.userView.setEditTriggers(self.userView.NoEditTriggers)
         #self.userView.setSelectionMode(self.roomView.NoSelection)
         self.userView.setDragDropMode(self.userView.NoDragDrop)
-        #self.roomView.setAlternatingRowColors(True)
+        self.userView.setFixedWidth(140)
         self.topicLine=self.Box0.itemAt(0).widget() # QLineEdit
         self.userList=self.Box0.itemAt(1).layout().itemAt(0).widget().widget(1).model() # QStringListModel
         self.output=self.Box0.itemAt(1).layout().itemAt(0).widget().widget(0) # QTextBrowser
         self.output.setReadOnly(True)
         self.output.setHtml(u"")
         self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
-        #self.input.setCompleter(QtGui.QCompleter())
-        #self.input.completer().setModel(QtGui.QStringListModel())
-        #self.input.completer().setCompletionMode(QtGui.QCompleter.InlineCompletion)
-        #self.input.completer().setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
         self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendStr)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
