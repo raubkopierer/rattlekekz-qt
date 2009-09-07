@@ -24,6 +24,7 @@ revision = "Git has no revisions 1"
 
 import sys
 from re import search
+import re
 
 #twisted/qt
 from PyQt4 import QtGui,QtCore
@@ -45,6 +46,7 @@ class View(TabManager,iterator):
         self.controller=controller
         self.revision=rev
         TabManager.__init__(self)
+        self.spaces=re.compile("  {1,}")
         self.blubb=lambda x:chr(ord(x)-43)
         self.plugins={}
         self._setup()
@@ -112,7 +114,6 @@ class View(TabManager,iterator):
     def deparse(self,msg):
         text,format=self.controller.decode(msg)
         msg=[]
-        self.fontTag=False
         for i in range(len(text)):
             text[i] = self.escapeText(text[i])
             if format[i] == "newline":
@@ -130,11 +131,7 @@ class View(TabManager,iterator):
                         color = "green"
                     else:
                         color = "blue"
-                    if self.fontTag:
-                        msg.append("</font><font color='#"+self.colors[color]+"'>"+text[i])
-                    else:
-                        msg.append("<font color='#"+self.colors[color]+"'>"+text[i])
-                        self.fontTag=True
+                    msg.append("<font color='#"+self.colors[color]+"'>"+text[i]+"</font>")
                     continue
             #if text[i].isspace() or text[i]=="":   # NOTE: If there are any bugs with new rooms and the roomop-message THIS could be is the reason ;)
             #    continue                           # 
@@ -142,10 +139,7 @@ class View(TabManager,iterator):
                 continue                            #
             form=format[i].split(",")
             color=""
-            if self.fontTag:
-                font="</font><span>"
-            else:
-                font="<span>"
+            font=([],[])
             for a in form:
                 if a in ["red", "blue", "green", "gray", "cyan", "magenta", "orange", "pink", "yellow","white","reset"]:
                     if a != "reset":
@@ -153,24 +147,23 @@ class View(TabManager,iterator):
                     else:
                         color="reset"
                 if a == "bold":
-                    font="<b>"
+                    font[0].append("<b>")
+                    font[1].append("</b>")
                 if a == "italic":
-                    font="<i>"
+                    font[0].append("<i>")
+                    font[0].append("</i>")
                 if a == "sb":
                     src="http://kekz.net/forum/Smileys/default/"+text[i]+".png"
                     
                 if a == "button":
                     color=""
-                    font="<a>"
+                    font[0].append("<a>")
+                    font[1].append("</a>")
                     text[i] = "["+text[i]+"]"
             if color != "":
-                if self.fontTag:
-                    msg.append("</font><font color='#"+self.colors[color]+"'>"+font+text[i]+font[:1]+"/"+font[1:])
-                else:
-                    msg.append("<font color='#"+self.colors[color]+"'>"+font+text[i]+font[:1]+"/"+font[1:])
-                    self.fontTag=True
+                msg.append("<font color='#"+self.colors[color]+"'>"+"".join(font[0])+text[i]+"".join(font[1])+"</font>")
             else:
-                msg.append(font+text[i]+font[:1]+"/"+font[1:])
+                msg.append("".join(font[0])+text[i]+"".join(font[1]))
             #for i in range(len(msg)):
             #    if type(msg[i][1]) is unicode:
             #        msg[i] = (msg[i][0],msg[i][1].encode("utf_8"))
@@ -178,15 +171,20 @@ class View(TabManager,iterator):
             ##self.lookupRooms[room].addLine(text[i])
         #for i in range(len(msg)): # TODO: Add real parsing
         #    msg[i]=msg[i][1]
-        if self.fontTag:
-            msg.append("</font>")
         return msg
 
     def escapeText(self,text):
         text="&amp;".join(text.split("&"))
         text="&lt;".join(text.split("<"))
         text="&gt;".join(text.split(">"))
-        return"&nbsp;".join(text.split(" "))
+        count=self.spaces.findall(text)
+        text=self.spaces.split(text)
+        for i in range(len(text)):
+            if len(count) != 0:
+                text[i]=text[i]+" "+(len(count.pop(0))-1)*"&nbsp;"
+            else:
+                break
+        return "".join(text)
 
     def fetchImage(self,url):
         getPage(url).addCallbacks(callback=lambda image:image)
