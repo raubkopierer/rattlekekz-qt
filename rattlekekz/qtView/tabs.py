@@ -24,17 +24,18 @@ from PyQt4 import QtCore,QtGui
 import re
 
 class rattlekekzBaseTab(QtGui.QWidget):
-    def _setup(self,room,parent):
-        pass
+    def __init__(self,parent=None,caller=None,room=None):
+        QtGui.QWidget.__init__(self,parent)
 
     def fu(self):
         print "fu"
 
 class rattlekekzLoginTab(rattlekekzBaseTab):
-    def _setup(self,room,parent):
-        self.room,self.parent=room,parent
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(self,parent)
+        self.room,self.parent=room,caller
         self.Box = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,self)
-        self.Box.addWidget(QtGui.QListView())
+        self.Box.addWidget(QtGui.QListWidget())
         Form = QtGui.QFormLayout()
         Form.addRow("Nickname",QtGui.QLineEdit())
         Form.addRow("Password",QtGui.QLineEdit())
@@ -43,14 +44,10 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         Form.itemAt(6).layout().addWidget(QtGui.QPushButton("&Login"))
         Form.itemAt(6).layout().addWidget(QtGui.QPushButton("&Register"))
         self.Box.addLayout(Form)
-        self.roomView = self.Box.itemAt(0).widget()
-        self.roomView.setModel(QtGui.QStringListModel())
-        self.roomView.setEditTriggers(self.roomView.NoEditTriggers)
-        self.roomView.setSelectionMode(self.roomView.NoSelection)
-        self.roomView.setDragDropMode(self.roomView.NoDragDrop)
-        self.roomView.setAlternatingRowColors(True)
-        self.roomView.setFixedWidth(140)
-        self.roomList = self.Box.itemAt(0).widget().model() # QStringListModel
+        self.roomList = self.Box.itemAt(0).widget()
+        self.roomList.setSelectionMode(self.roomList.NoSelection) # TODO: make cool room selection
+        self.roomList.setAlternatingRowColors(True)
+        self.roomList.setFixedWidth(140)
         self.nickInput = self.Box.itemAt(1).layout().itemAt(1).widget() # QLineEdit
         self.passInput = self.Box.itemAt(1).layout().itemAt(3).widget() # QLineEdit
         self.roomInput = self.Box.itemAt(1).layout().itemAt(5).widget() # QLineEdit
@@ -77,8 +74,9 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         self.parent.changeTab("$register")
 
 class rattlekekzRegTab(rattlekekzBaseTab):
-    def _setup(self,room,parent):
-        self.room,self.parent=room,parent
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(self,parent)
+        self.room,self.parent=room,caller
         self.Form = QtGui.QFormLayout(self)
         self.Form.addRow("Nickname",QtGui.QLineEdit())
         self.Form.addRow("Password",QtGui.QLineEdit())
@@ -106,8 +104,9 @@ class rattlekekzRegTab(rattlekekzBaseTab):
             "STUB: Passwords not matching"
 
 class rattlekekzPrivTab(rattlekekzBaseTab):
-    def _setup(self,room,parent):
-        self.room,self.parent=room,parent
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(self,parent)
+        self.room,self.parent=room,caller
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QTextBrowser())
         Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
@@ -132,16 +131,15 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.output.append(self.parent.stringHandler(msg,True))
 
 class rattlekekzMsgTab(rattlekekzPrivTab):
-    def _setup(self,room,parent):
-        self.room,self.parent=room,parent
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(self,parent)
+        self.room,self.parent=room,caller
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QLineEdit())
+        self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
+        self.Box0.itemAt(1).widget().addWidget(QtGui.QTextBrowser())
+        self.Box0.itemAt(1).widget().addWidget(QtGui.QListWidget())
         Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
-        Box1.addWidget(QtGui.QSplitter())
-        Box1.itemAt(0).widget().addWidget(QtGui.QTextBrowser())
-        Box1.itemAt(0).widget().addWidget(QtGui.QListView())
-        self.Box0.addLayout(Box1)
-        Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         class QLineEdit(QtGui.QLineEdit):
             def event(self,event):
                 if event.type() != QtCore.QEvent.KeyPress:
@@ -156,18 +154,16 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                     return True
                 else:
                     return QtGui.QLineEdit.event(self,event)
-        Box2.addWidget(QLineEdit())
-        Box2.addWidget(QtGui.QPushButton("&Send"))
-        self.Box0.addLayout(Box2)
-        self.userView = self.Box0.itemAt(1).layout().itemAt(0).widget().widget(1)
-        self.userView.setModel(QtGui.QStringListModel())
-        self.userView.setEditTriggers(self.userView.NoEditTriggers)
+        Box1.addWidget(QLineEdit())
+        Box1.addWidget(QtGui.QPushButton("&Send"))
+        self.Box0.addLayout(Box1)
+        self.userList = self.Box0.itemAt(1).widget().widget(1)
+        #self.userView.setEditTriggers(self.userView.NoEditTriggers)
         #self.userView.setSelectionMode(self.roomView.NoSelection)
-        self.userView.setDragDropMode(self.userView.NoDragDrop)
-        self.userView.setFixedWidth(140)
+        #self.userView.setDragDropMode(self.userView.NoDragDrop)
+        self.userList.setFixedWidth(140)
         self.topicLine=self.Box0.itemAt(0).widget() # QLineEdit
-        self.userList=self.Box0.itemAt(1).layout().itemAt(0).widget().widget(1).model() # QStringListModel
-        self.output=self.Box0.itemAt(1).layout().itemAt(0).widget().widget(0) # QTextBrowser
+        self.output=self.Box0.itemAt(1).widget().widget(0) # QTextBrowser
         self.output.setReadOnly(True)
         self.output.setHtml(u"")
         self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
@@ -180,7 +176,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         """takes a list of users and updates the Userlist of the room"""
         self.completion=[]
         new=[]
-        self.userList.removeRows(0,self.userList.rowCount())
+        self.userList.clear()
         #if color: # TODO: Add color parsing
         #    for i in users:
         #        self.completion.append(i[0])
@@ -218,7 +214,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                 else:
                     new.append(self.color+i[0])
         new = self.parent.stringHandler(new,True)
-        self.userList.setStringList(new)
+        self.userList.addItems(new)
         #self.input.completer().model().setStringList(self.completion)
 
     def complete(self):
@@ -264,11 +260,44 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.addLine(self.parent.stringHandler("Topic: "+topic,True))
 
 class rattlekekzMailTab(rattlekekzBaseTab):
-    pass
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(self,parent)
+        self.room,self.parent=room,caller
+        self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
+        self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
+        self.Box0.itemAt(0).widget().addWidget(QtGui.QListWidget())
+        self.Box0.itemAt(0).widget().addWidget(QtGui.QTextBrowser())
+        Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,self)
+        Box1.addWidget(QtGui.QPushButton("re&fresh"))
+        Box1.addWidget(QtGui.QPushButton("&Response"))
+        Box1.addWidget(QtGui.QPushButton("&new Mail"))
+        Box1.addWidget(QtGui.QPushButton("delete Mail"))
+        Box1.addWidget(QtGui.QPushButton("delete readed Mails"))
+        self.Box0.addLayout(Box1)
+        self.mailList = self.Box0.itemAt(0).widget().widget(0)
+        #self.mailList.setFixedWidth(140)
+        self.refreshButton=self.Box0.itemAt(1).layout().itemAt(0).widget()
+        self.responseButton=self.Box0.itemAt(1).layout().itemAt(1).widget()
+        self.newButton=self.Box0.itemAt(1).layout().itemAt(2).widget()
+        self.deleteButton=self.Box0.itemAt(1).layout().itemAt(3).widget()
+        self.readedButton=self.Box0.itemAt(1).layout().itemAt(4).widget()
+        self.connect(self.refreshButton,QtCore.SIGNAL("clicked()"),self.parent.refreshMaillist)
+        self.connect(self.mailList,QtCore.SIGNAL("itemClicked(widget)"),self.getMail)
+
+    def receivedMails(self,userid,mailcount,mails):
+        post=[]
+        for i in mails:
+            post.append(self.parent.stringHandler(str(i["index"])+".: von "+i["from"]+", um "+i["date"]+": \n"+i["stub"],True))
+        self.mailList.clear()
+        self.mailList.addItems(post)
+
+    def getMail(self,widget=None):
+        print "gonna get it dude ;)"
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
-    def _setup(self,room,parent):
-        self.room,self.parent=room,parent
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(self,parent)
+        self.room,self.parent=room,caller
         Box = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         Box.addWidget(QtGui.QTextEdit())
         self.output = Box.itemAt(0).widget()
