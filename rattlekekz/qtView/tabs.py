@@ -66,7 +66,8 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         list=[]
         for i in rooms:
             list.append(i["name"]+" ("+str(i["users"])+"/"+str(i["max"])+")")
-        self.roomList.setStringList(list)
+        self.roomList.clear()
+        self.roomList.addItems(list)
 
     def sendLogin(self):
         nick,password,rooms=self.parent.stringHandler([self.nickInput.text(),self.passInput.text(),self.roomInput.text()])
