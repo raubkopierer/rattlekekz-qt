@@ -225,7 +225,7 @@ class View(TabManager,iterator):
 
     def receivedPreLoginData(self,rooms,array):
         self.isConnected=True
-        self.getTab(self.ShownRoom).receivedPreLoginData(rooms,array)
+        self.getTab("$login").receivedPreLoginData(rooms,array) # TODO: add failsafe
 
     def startConnection(self,host,port):
         reactor.connectSSL(host, port, self.controller.model, self.controller.model)
@@ -329,11 +329,22 @@ class View(TabManager,iterator):
     def MailInfo(self,info):
         pass
 
+    def openMailTab(self):
+        self.addTab("$mail",rattlekekzMailTab)
+        self.changeTab("$mail")
+
+    def getMail(self,index):
+        self.iterPlugins('getMail', [index])
+
+    def refreshMaillist(self):
+        self.iterPlugins('refreshMaillist')
+
     def receivedMails(self,userid,mailcount,mails):
-        pass
+        self.openMailTab()
+        self.getTab("$mail").receivedMails(userid,mailcount,mails)
 
     def printMail(self,user,date,mail):
-        pass
+        print "got to print mails?"
 
     def sendStr(self,channel,string):
         self.iterPlugins('sendStr', [channel, string])

@@ -39,16 +39,11 @@ class TabManager():
 
     def getTab(self,tabname):
         """returns the object of a Tab"""
-        Tab = None
         for i in range(self.tabs.count()):
             if self.stringHandler(self.tabs.tabText(i)).lower()==self.stringHandler(tabname).lower():
                 Tab=self.tabs.widget(i)
                 break
-        if Tab != None:
-            return Tab
-        else:
-            self.addTab("$STUB",rattlekekzInfoTab)
-            self.getTab("$STUB").addLine("STUB: Tab %s was not found" % tabname)
+        return Tab
 
     def getTabId(self,tabname):
         for i in range(self.tabs.count()):
@@ -63,11 +58,10 @@ class TabManager():
             self.getTab(tabname.lower())
         except:
             if index == None:
-                self.tabs.addTab(tab(),tabname)
+                self.tabs.addTab(tab(caller=self,room=tabname),tabname)
             else:
-                self.tabs.insertTab(index,tab(),tabname)
+                self.tabs.insertTab(index,tab(caller=self,room=tabname),tabname)
             self.lookupRooms.append("stub")
-            self.getTab(tabname)._setup(tabname,self)
             if self.tabs.count() == 1:
                 self.shownRoom = tabname
 
