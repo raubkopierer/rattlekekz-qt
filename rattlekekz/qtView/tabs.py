@@ -21,11 +21,20 @@ copyright = """
 """
 
 from PyQt4 import QtCore,QtGui
-import re
+import re,webbrowser
 
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
         QtGui.QWidget.__init__(self,parent)
+        self.browser=None
+
+    def clickedURL(self,url):
+        if self.browser == None:
+            self.browser = webbrowser.get()
+        if not url.isRelative():
+            self.browser.open(url.toString())
+        else:
+            self.browser.open("http://"+url.toString())
 
     def fu(self):
         print "fu"
@@ -116,11 +125,13 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.Box0.addLayout(Box2)
         self.output=self.Box0.itemAt(0).widget() # QTextBrowser
         self.output.setReadOnly(True)
+        self.output.setOpenLinks(False)
         self.output.setHtml(u"")
         self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
         self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendStr)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
+        self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
     def sendStr(self):
         if self.input.hasAcceptableInput():
@@ -166,12 +177,14 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.topicLine=self.Box0.itemAt(0).widget() # QLineEdit
         self.output=self.Box0.itemAt(1).widget().widget(0) # QTextBrowser
         self.output.setReadOnly(True)
+        self.output.setOpenLinks(False)
         self.output.setHtml(u"")
         self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
         self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendStr)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
+        self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
     def listUser(self,users,color=True):
         """takes a list of users and updates the Userlist of the room"""
@@ -277,13 +290,14 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         self.Box0.addLayout(Box1)
         self.mailList = self.Box0.itemAt(0).widget().widget(0)
         #self.mailList.setFixedWidth(140)
+        self.mailOutput = self.Box0.itemAt(0).widget().widget(1)
         self.refreshButton=self.Box0.itemAt(1).layout().itemAt(0).widget()
         self.responseButton=self.Box0.itemAt(1).layout().itemAt(1).widget()
         self.newButton=self.Box0.itemAt(1).layout().itemAt(2).widget()
         self.deleteButton=self.Box0.itemAt(1).layout().itemAt(3).widget()
         self.readedButton=self.Box0.itemAt(1).layout().itemAt(4).widget()
         self.connect(self.refreshButton,QtCore.SIGNAL("clicked()"),self.parent.refreshMaillist)
-        self.connect(self.mailList,QtCore.SIGNAL("itemClicked(widget)"),self.getMail)
+        self.connect(self.mailList,QtCore.SIGNAL("itemClicked(QListWidgetItem*)"),self.getMail)
 
     def receivedMails(self,userid,mailcount,mails):
         post=[]
@@ -292,8 +306,15 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         self.mailList.clear()
         self.mailList.addItems(post)
 
-    def getMail(self,widget=None):
-        print "gonna get it dude ;)"
+    def getMail(self,widget):
+        index = widget.listWidget().row(widget)
+        self.parent.getMail(index)
+        print "get mail",index
+
+    def addLine(self,msg):
+        self.mailOutput.setHtml(u"")
+        print msg
+        self.mailOutput.append("".join(self.parent.stringHandler(msg,True)))
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
