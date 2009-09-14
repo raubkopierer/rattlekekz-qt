@@ -24,7 +24,7 @@ revision = "Git has no revisions 1"
 
 import sys
 from re import search
-import re
+import re,urllib
 
 #twisted/qt
 from PyQt4 import QtGui,QtCore
@@ -124,7 +124,16 @@ class View(TabManager,iterator):
                 msg.append("<hr>")
                 continue
             if format[i] == "imageurl":
-                msg.append(("<img src='"+text[i]+"'>"))
+                try:
+                    image=urllib.urlretrieve(text[i])[0]
+                    msg.append("<img src='"+self.stringHandler(image)+"'>")
+                except:
+                    msg.append(self.escapeText("<image url is invalid>"))
+                #image=urllib2.urlopen(text[i]).read()
+                #for y in range(self.tabs.count()):
+                #    if isinstance(self.tabs.widget(y),rattlekekzPrivTab):
+                #        self.tabs.widget(y).output.document().addResource(QtGui.QTextDocument.ImageResource,QtGui.QUrl("mydata://"+self.stringHandler(text[i])),QVariant(image))
+                #        msg.append(("<img src='"+"mydata://"+self.stringHandler(text[i])+"'>"))
                 continue
             if len(format[i]) > 1:
                 if format[i][0] == "ownnick":

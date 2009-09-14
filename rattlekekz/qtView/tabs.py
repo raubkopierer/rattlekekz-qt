@@ -297,12 +297,19 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         self.deleteButton=self.Box0.itemAt(1).layout().itemAt(3).widget()
         self.readedButton=self.Box0.itemAt(1).layout().itemAt(4).widget()
         self.connect(self.refreshButton,QtCore.SIGNAL("clicked()"),self.parent.refreshMaillist)
+        self.connect(self.responseButton,QtCore.SIGNAL("clicked()"),self.respondMail)
+        self.connect(self.newButton,QtCore.SIGNAL("clicked()"),self.newMail)
+        self.connect(self.deleteButton,QtCore.SIGNAL("clicked()"),self.delMail)
+        self.connect(self.readedButton,QtCore.SIGNAL("clicked()"),self.delReadedMail)
         self.connect(self.mailList,QtCore.SIGNAL("itemClicked(QListWidgetItem*)"),self.getMail)
 
     def receivedMails(self,userid,mailcount,mails):
         post=[]
         for i in mails:
-            post.append(self.parent.stringHandler(str(i["index"])+".: von "+i["from"]+", um "+i["date"]+": \n"+i["stub"],True))
+            if i.has_key("unread"):
+                post.append(self.parent.stringHandler(str(i["index"])+".: von "+i["from"]+", um "+i["date"]+" (unread): \n"+i["stub"],True))
+            else:
+                post.append(self.parent.stringHandler(str(i["index"])+".: von "+i["from"]+", um "+i["date"]+": \n"+i["stub"],True))
         self.mailList.clear()
         self.mailList.addItems(post)
 
@@ -310,6 +317,18 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         index = widget.listWidget().row(widget)
         self.parent.getMail(index)
         print "get mail",index
+
+    def newMail(self):
+        print "STUB: implement mailEdit"
+
+    def respondMail(self):
+        print "STUB: implement mailEdit"
+
+    def delMail(self):
+        print "STUB: implement delete"
+
+    def delReadedMail(self):
+        print "STUB: implement delete"
 
     def addLine(self,msg):
         self.mailOutput.setHtml(u"")
