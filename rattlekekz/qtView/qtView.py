@@ -376,9 +376,3 @@ class View(TabManager,iterator):
 
     def __getattr__(self, name):
         return self.unknownMethod(name)
-
-
-if __name__=="__main__": # TODO: Make this right
-    server="kekz.net"
-    from rattlekekz.core import controller
-    controllerRattleKekz.Kekzcontroller(View).startConnection(server,23002)

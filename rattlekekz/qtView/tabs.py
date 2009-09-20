@@ -26,15 +26,12 @@ import re,webbrowser
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
         QtGui.QWidget.__init__(self,parent)
-        self.browser=None
 
     def clickedURL(self,url):
-        if self.browser == None:
-            self.browser = webbrowser.get()
         if not url.isRelative():
-            self.browser.open(url.toString())
+            self.parent.controller.openURL(url.toString())
         else:
-            self.browser.open("http://"+url.toString())
+            self.parent.controller.openURL("http://"+url.toString())
 
     def fu(self):
         print "fu"
