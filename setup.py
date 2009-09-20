@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from distutils.core import setup
+import glob
 
 setup(name='rattlekekz-qt',
       version='0.1',
@@ -10,5 +11,6 @@ setup(name='rattlekekz-qt',
       packages=['rattlekekz.qtView'],
       requires=['PyQt4','rattlekekz'],
       url="http://kekz.net/",
-      license="GPL v3 or higher"
+      license="GPL v3 or higher",
+      data_files=[("share/emoticons/rattlekekz",glob.glob("share/emoticons/*.png"))]
      )
