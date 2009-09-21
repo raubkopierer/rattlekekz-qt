@@ -99,6 +99,10 @@ class View(TabManager,iterator):
         self.tabs.setMinimumSize(400,350)
         self.main.connect(self.tabs,QtCore.SIGNAL("tabCloseRequested(int)"),self.closeTab)
         self.main.connect(self.main,QtCore.SIGNAL("closed()"),self.quit)
+        self.main.connect(self.tabs,QtCore.SIGNAL("currentChanged(int)"),self.activateTab)
+
+    def activateTab(self,integer):
+        self.ShownRoom=self.stringHandler(self.tabs.tabText(integer))
 
     def closeTab(self,integer):
         if isinstance(self.tabs.widget(integer),rattlekekzMsgTab):
@@ -236,6 +240,7 @@ class View(TabManager,iterator):
 
     def receivedPreLoginData(self,rooms,array):
         self.isConnected=True
+        self.addTab("$login",self.rattlekekzLoginTab)
         self.getTab("$login").receivedPreLoginData(rooms,array) # TODO: add failsafe
 
     def startConnection(self,host,port):
@@ -329,10 +334,12 @@ class View(TabManager,iterator):
         pass
 
     def minorInfo(self,message):
-        if len(self.lookupRooms)==1:
+        if isinstance(self.getTab(self.ShownRoom),self.rattlekekzMsgTab):
+            self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
+        else:
             self.addTab("$infos",rattlekekzInfoTab)
             self.changeTab("$infos")
-        self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
+            self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
 
     def receivedWhois(self,nick,array):
         pass

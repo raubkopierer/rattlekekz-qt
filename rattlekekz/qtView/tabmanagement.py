@@ -63,7 +63,7 @@ class TabManager():
                 self.tabs.insertTab(index,tab(caller=self,room=tabname),tabname)
             self.lookupRooms.append("stub")
             if self.tabs.count() == 1:
-                self.shownRoom = tabname
+                self.ShownRoom = tabname
 
     def delTab(self,tabname):
         """deletes a Tab"""
