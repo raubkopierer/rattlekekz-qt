@@ -103,6 +103,7 @@ class View(TabManager,iterator):
 
     def activateTab(self,integer):
         self.ShownRoom=self.stringHandler(self.tabs.tabText(integer))
+        self.tabs.widget(integer).gotFocus()
 
     def closeTab(self,integer):
         if isinstance(self.tabs.widget(integer),rattlekekzMsgTab):

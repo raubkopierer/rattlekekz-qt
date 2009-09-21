@@ -26,12 +26,16 @@ import re,webbrowser
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
         QtGui.QWidget.__init__(self,parent)
+        self.defaultWidget=self
 
     def clickedURL(self,url):
         if not url.isRelative():
             self.parent.controller.openURL(url.toString())
         else:
             self.parent.controller.openURL("http://"+url.toString())
+
+    def gotFocus(self):
+        self.defaultWidget.setFocus()
 
     def fu(self):
         print "fu"
@@ -55,6 +59,7 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         self.roomList.setAlternatingRowColors(True)
         self.roomList.setFixedWidth(140)
         self.nickInput = self.Box.itemAt(1).layout().itemAt(1).widget() # QLineEdit
+        self.defaultWidget=self.nickInput
         self.passInput = self.Box.itemAt(1).layout().itemAt(3).widget() # QLineEdit
         self.roomInput = self.Box.itemAt(1).layout().itemAt(5).widget() # QLineEdit
         self.loginButton = self.Box.itemAt(1).layout().itemAt(6).layout().itemAt(0).widget() # QPushButton
@@ -91,6 +96,7 @@ class rattlekekzRegTab(rattlekekzBaseTab):
         self.Form.addRow("E-Mail",QtGui.QLineEdit())
         self.Form.addRow(QtGui.QPushButton("&Register"))
         self.nickInput = self.Form.itemAt(1).widget() # QLineEdit
+        self.defaultWidget=self.nickInput
         self.passwordInput = self.Form.itemAt(3).widget() # QLineEdit
         self.passwordCheck = self.Form.itemAt(5).widget() # QLineEdit
         self.passwordInput.setEchoMode(QtGui.QLineEdit.Password)
@@ -125,6 +131,7 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.output.setOpenLinks(False)
         self.output.setHtml(u"")
         self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
+        self.defaultWidget=self.input
         self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
         self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendStr)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
@@ -177,6 +184,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.output.setOpenLinks(False)
         self.output.setHtml(u"")
         self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
+        self.defaultWidget=self.input
         self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
         self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendStr)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
@@ -286,6 +294,7 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         Box1.addWidget(QtGui.QPushButton("delete readed Mails"))
         self.Box0.addLayout(Box1)
         self.mailList = self.Box0.itemAt(0).widget().widget(0)
+        self.defaultWidget=self.mailList
         #self.mailList.setFixedWidth(140)
         self.mailOutput = self.Box0.itemAt(0).widget().widget(1)
         self.refreshButton=self.Box0.itemAt(1).layout().itemAt(0).widget()
@@ -339,6 +348,7 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
         Box = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         Box.addWidget(QtGui.QTextEdit())
         self.output = Box.itemAt(0).widget()
+        self.defaultWidget=self.output
         self.output.setHtml("")
         self.output.setReadOnly(True)
 
