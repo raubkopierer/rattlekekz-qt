@@ -21,7 +21,8 @@ copyright = """
 """
 
 from PyQt4 import QtCore,QtGui
-import re,webbrowser,sys
+from rattlekekz.qtView.widgets import *
+import re,webbrowser
 
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
@@ -123,7 +124,7 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QTextBrowser())
         Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
-        Box2.addWidget(rattlekekzLineEdit())
+        Box2.addWidget(rattlekekzEditWidget())
         Box2.addWidget(QtGui.QPushButton("&Send"))
         self.Box0.addLayout(Box2)
         self.output=self.Box0.itemAt(0).widget() # QTextBrowser
@@ -156,7 +157,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.Box0.itemAt(1).widget().addWidget(QtGui.QTextBrowser())
         self.Box0.itemAt(1).widget().addWidget(QtGui.QListWidget())
         Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
-        Box1.addWidget(rattlekekzLineEdit())
+        Box1.addWidget(rattlekekzEditWidget())
         Box1.addWidget(QtGui.QPushButton("&Send"))
         self.Box0.addLayout(Box1)
         self.userList = self.Box0.itemAt(1).widget().widget(1)
@@ -346,72 +347,3 @@ class rattlekekzSecureTab(rattlekekzBaseTab):
 
 class rattlekekzEditTab(rattlekekzBaseTab):
     pass
-
-class rattlekekzLineEdit(QtGui.QLineEdit):
-    def __init__(self,text="",parent=None):
-        QtGui.QLineEdit.__init__(self,text,parent)
-        self.history=[]
-        self.historyIndex=-1
-        self.current=None
-
-    def event(self,event):
-        taken=False
-        if event.type() != QtCore.QEvent.KeyPress:
-            if QtGui.QLineEdit.event(self,event):
-                taken=True
-        elif event.key() != QtCore.Qt.Key_Tab:
-            if event.key() != QtCore.Qt.Key_Backtab:
-                if self.keyPressEvent(event):
-                    taken=True
-            else:
-                taken=True
-        elif event.modifiers().__eq__(QtCore.Qt.NoModifier):
-            self.emit(QtCore.SIGNAL("tabPressed()"))
-            taken=True
-        else:
-            if QtGui.QLineEdit.event(self,event):
-                taken=True
-        return taken
-
-    def keyPressEvent(self,event):
-        taken=False
-        if event.matches(QtGui.QKeySequence.InsertParagraphSeparator):
-            taken=True
-            self.returnPressed()
-        elif event.matches(QtGui.QKeySequence.MoveToPreviousLine):
-            taken=True
-            self.scrollUp()
-        elif event.matches(QtGui.QKeySequence.MoveToNextLine):
-            taken=True
-            self.scrollDown()
-        else:
-            if QtGui.QLineEdit.keyPressEvent(self,event):
-                taken=True
-        return taken
-
-    def returnPressed(self):
-        if self.historyIndex>0:
-            self.history.pop(self.historyIndex)
-        self.history.insert(0,self.text())
-        self.historyIndex=-1
-        self.current=None
-        self.emit(QtCore.SIGNAL("returnPressed()"))
-
-    def scrollUp(self):
-        if self.historyIndex+1<len(self.history):
-            if self.historyIndex==-1:
-                self.current=(self.text(),self.cursorPosition())
-            self.historyIndex+=1
-            self.setText(self.history[self.historyIndex])
-            self.setCursorPosition(self.history[self.historyIndex])
-
-    def scrollDown(self):
-        if self.historyIndex>0:
-            self.historyIndex-=1
-            self.setText(self.history[self.historyIndex])
-            self.setCursorPosition(len(self.history[self.historyIndex]))
-        elif self.current!=None:
-            self.setText(self.current[0])
-            self.setCursorPosition(self.current[1])
-            self.current=None
-            self.historyIndex=-1

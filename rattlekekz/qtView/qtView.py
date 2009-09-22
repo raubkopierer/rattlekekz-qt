@@ -36,6 +36,7 @@ from twisted.web.client import getPage
 
 from rattlekekz.core.pluginmanager import iterator
 from rattlekekz.qtView.tabs import *
+from rattlekekz.qtView.widgets import *
 from rattlekekz.qtView.tabmanagement import TabManager
 
 rev=search("\d+",revision).group()
@@ -85,10 +86,7 @@ class View(TabManager,iterator):
                      "redaway":"FF2020"}
 
     def _setup(self):
-        class mainWin(QtGui.QMainWindow):
-            def closeEvent(self,event):
-                self.emit(QtCore.SIGNAL("closed()"))
-        self.main=mainWin()
+        self.main=rattlekekzMainWidget()
         self.main.setWindowTitle(self.name)
         self.menu=self.main.menuBar()
         self.menu.addMenu("&File") # TODO: add shit
