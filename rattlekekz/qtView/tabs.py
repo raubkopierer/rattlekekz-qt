@@ -21,7 +21,7 @@ copyright = """
 """
 
 from PyQt4 import QtCore,QtGui
-import re,webbrowser
+import re,webbrowser,sys
 
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
@@ -156,21 +156,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.Box0.itemAt(1).widget().addWidget(QtGui.QTextBrowser())
         self.Box0.itemAt(1).widget().addWidget(QtGui.QListWidget())
         Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
-        class QLineEdit(QtGui.QLineEdit):
-            def event(self,event):
-                if event.type() != QtCore.QEvent.KeyPress:
-                    return QtGui.QLineEdit.event(self,event)
-                elif event.key() != QtCore.Qt.Key_Tab:
-                    if event.key() != QtCore.Qt.Key_Backtab:
-                        return self.keyPressEvent(event)
-                    else:
-                        return True
-                elif event.modifiers().__eq__(QtCore.Qt.NoModifier):
-                    self.emit(QtCore.SIGNAL("tabPressed()"))
-                    return True
-                else:
-                    return QtGui.QLineEdit.event(self,event)
-        Box1.addWidget(QLineEdit())
+        Box1.addWidget(rattlekekzLineEdit())
         Box1.addWidget(QtGui.QPushButton("&Send"))
         self.Box0.addLayout(Box1)
         self.userList = self.Box0.itemAt(1).widget().widget(1)
@@ -360,3 +346,29 @@ class rattlekekzSecureTab(rattlekekzBaseTab):
 
 class rattlekekzEditTab(rattlekekzBaseTab):
     pass
+
+class rattlekekzLineEdit(QtGui.QLineEdit):
+    def __init__(self,parent=None):
+        QtGui.QLineEdit.__init__(self,parent)
+
+    def event(self,event):
+        taken=False
+        if event.type() != QtCore.QEvent.KeyPress:
+            if QtGui.QLineEdit.event(self,event):
+                taken=True
+        elif event.key() != QtCore.Qt.Key_Tab:
+            if event.key() != QtCore.Qt.Key_Backtab:
+                if self.keyPressEvent(event):
+                    taken=True
+            else:
+                taken=True
+        elif event.modifiers().__eq__(QtCore.Qt.NoModifier):
+            self.emit(QtCore.SIGNAL("tabPressed()"))
+            taken=True
+        else:
+            if QtGui.QLineEdit.event(self,event):
+                taken=True
+        return taken
+
+    def scrollUp(self):
+        pass
