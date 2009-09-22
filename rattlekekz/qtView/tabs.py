@@ -400,15 +400,18 @@ class rattlekekzLineEdit(QtGui.QLineEdit):
     def scrollUp(self):
         if self.historyIndex+1<len(self.history):
             if self.historyIndex==-1:
-                self.current=self.text()
+                self.current=(self.text(),self.cursorPosition())
             self.historyIndex+=1
             self.setText(self.history[self.historyIndex])
+            self.setCursorPosition(self.history[self.historyIndex])
 
     def scrollDown(self):
         if self.historyIndex>0:
             self.historyIndex-=1
             self.setText(self.history[self.historyIndex])
+            self.setCursorPosition(len(self.history[self.historyIndex]))
         elif self.current!=None:
-            self.setText(self.current)
+            self.setText(self.current[0])
+            self.setCursorPosition(self.current[1])
             self.current=None
             self.historyIndex=-1
