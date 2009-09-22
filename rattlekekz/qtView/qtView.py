@@ -47,7 +47,7 @@ class View(TabManager,iterator):
         self.revision=rev
         TabManager.__init__(self)
         self.spaces=re.compile("  {1,}")
-        self.urls=re.compile("(?P<url>(?#Protocol)(?:(?:ht|f)tp(?:s?)\:\/\/|~/|/)?(?#Username:Password)(?:\w+:\w+@)?(?#Subdomains)(?:(?:[-\w]+\.)+(?#TopLevel Domains)(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)?)",re.I)
+        self.urls=re.compile("(?P<pre>(\s|^))(?P<url>(?#Protocol)(?:(?:ht|f)tp(?:s?)\:\/\/|~/|/)(?#Username:Password)(?:\w+:\w+@)?(?#Subdomains)(?:(?:[-\w]+\.)+(?#TopLevel Domains)(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)?)(?P<suf>(\s|$))",re.I)
         self.blubb=lambda x:chr(ord(x)-43)
         self.plugins={}
         self._setup()
@@ -152,7 +152,7 @@ class View(TabManager,iterator):
             #    continue                           # 
             if text[i] == "":                       #
                 continue                            #
-            text[i]=self.urls.subn('<a href="\g<url>">\g<url></a>',text[i])[0]
+            text[i]=self.urls.subn('\g<pre><a href="\g<url>">\g<url></a>\g<suf>',text[i])[0]
             form=format[i].split(",")
             color=""
             font=([],[])
