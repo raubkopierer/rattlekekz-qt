@@ -123,7 +123,7 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QTextBrowser())
         Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
-        Box2.addWidget(QtGui.QLineEdit())
+        Box2.addWidget(rattlekekzLineEdit())
         Box2.addWidget(QtGui.QPushButton("&Send"))
         self.Box0.addLayout(Box2)
         self.output=self.Box0.itemAt(0).widget() # QTextBrowser
@@ -133,7 +133,7 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.defaultWidget=self.input
         self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
-        self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendStr)
+        self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
@@ -172,7 +172,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.defaultWidget=self.input
         self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
-        self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendStr)
+        self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
@@ -348,8 +348,11 @@ class rattlekekzEditTab(rattlekekzBaseTab):
     pass
 
 class rattlekekzLineEdit(QtGui.QLineEdit):
-    def __init__(self,parent=None):
-        QtGui.QLineEdit.__init__(self,parent)
+    def __init__(self,text="",parent=None):
+        QtGui.QLineEdit.__init__(self,text,parent)
+        self.history=[]
+        self.historyIndex=-1
+        self.current=None
 
     def event(self,event):
         taken=False
@@ -370,5 +373,42 @@ class rattlekekzLineEdit(QtGui.QLineEdit):
                 taken=True
         return taken
 
+    def keyPressEvent(self,event):
+        taken=False
+        if event.matches(QtGui.QKeySequence.InsertParagraphSeparator):
+            taken=True
+            self.returnPressed()
+        elif event.matches(QtGui.QKeySequence.MoveToPreviousLine):
+            taken=True
+            self.scrollUp()
+        elif event.matches(QtGui.QKeySequence.MoveToNextLine):
+            taken=True
+            self.scrollDown()
+        else:
+            if QtGui.QLineEdit.keyPressEvent(self,event):
+                taken=True
+        return taken
+
+    def returnPressed(self):
+        if self.historyIndex>0:
+            self.history.pop(self.historyIndex)
+        self.history.insert(0,self.text())
+        self.historyIndex=-1
+        self.current=None
+        self.emit(QtCore.SIGNAL("returnPressed()"))
+
     def scrollUp(self):
-        pass
+        if self.historyIndex+1<len(self.history):
+            if self.historyIndex==-1:
+                self.current=self.text()
+            self.historyIndex+=1
+            self.setText(self.history[self.historyIndex])
+
+    def scrollDown(self):
+        if self.historyIndex>0:
+            self.historyIndex-=1
+            self.setText(self.history[self.historyIndex])
+        elif self.current!=None:
+            self.setText(self.current)
+            self.current=None
+            self.historyIndex=-1
