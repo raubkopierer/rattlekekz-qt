@@ -1,5 +1,15 @@
 This is a view for the rattlekekz kekz.net client (github.com/Jem777/rattlekekz)
+You need to install rattlekekz and all it's depencies.
+
+In addition to these you need the following:
+
+at least pyqt 4.5 (http://www.riverbankcomputing.co.uk)
+qt4reactor for twisted (https://launchpad.net/qt4reactor)
+
+It's recommended to use python2.6
 
 To install run:
 
 python setup.py install
+
+After that you can start rattlekekz-qt with 'rattlekekz -v qtView'.
