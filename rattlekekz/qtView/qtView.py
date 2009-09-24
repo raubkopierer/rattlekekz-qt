@@ -332,13 +332,25 @@ class View(TabManager,iterator):
     def receivedInformation(self,info):
         pass
 
-    def minorInfo(self,message):
-        if isinstance(self.getTab(self.ShownRoom),self.rattlekekzMsgTab):
-            self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
+    def minorInfo(self,room,nick):
+        """this method is used to determine wether a new info-tab must be opened to display e.g. a bot message"""
+        pre=None
+        if nick=="":
+            pre="Info:°nn°"
+        if not isinstance(self.getTab(self.ShownRoom),rattlekekzMsgTab):
+            self.addRoom("$info","InfoRoom")
+            self.changeTab("$info")
+            return (pre,"$info")
+        elif room=="":
+            return (pre,self.ShownRoom)
         else:
-            self.addTab("$infos",rattlekekzInfoTab)
-            self.changeTab("$infos")
-            self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
+            return (pre,room)
+        #if isinstance(self.getTab(self.ShownRoom),self.rattlekekzMsgTab):
+        #    self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
+        #else:
+        #    self.addTab("$infos",rattlekekzInfoTab)
+        #    self.changeTab("$infos")
+        #    self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
 
     def receivedWhois(self,nick,array):
         pass
