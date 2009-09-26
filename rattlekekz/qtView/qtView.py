@@ -171,7 +171,7 @@ class View(TabManager,iterator):
                     
                 if a == "button":
                     color=""
-                    font[0].append("<a>")
+                    font[0].append("<a href='button:"+text[i]+"'>")
                     font[1].append("</a>")
                     text[i] = "["+text[i]+"]"
             if color != "":

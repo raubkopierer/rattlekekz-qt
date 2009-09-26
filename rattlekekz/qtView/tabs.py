@@ -27,10 +27,18 @@ import re,webbrowser
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
         QtGui.QWidget.__init__(self,parent)
+        self.room,self.parent=room,caller
         self.defaultWidget=self
 
     def clickedURL(self,url):
-        if not url.isRelative():
+        string = url.toString().toLower()
+        if string.startsWith("button:"):
+            string = string.mid(7)
+            if string == "/joininvite":
+                self.parent.sendStr(self.parent.stringHandler(self.room),"/joininvite")
+            elif string == "/goinvite":
+                self.parent.sendStr(self.parent.stringHandler(self.room),"/goinvite")
+        elif not url.isRelative():
             self.parent.controller.openURL(url.toString())
         else:
             self.parent.controller.openURL("http://"+url.toString())
@@ -43,8 +51,7 @@ class rattlekekzBaseTab(QtGui.QWidget):
 
 class rattlekekzLoginTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(self,parent)
-        self.room,self.parent=room,caller
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Box = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,self)
         self.Box.addWidget(QtGui.QListWidget())
         Form = QtGui.QFormLayout()
@@ -88,8 +95,7 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
 
 class rattlekekzRegTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(self,parent)
-        self.room,self.parent=room,caller
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Form = QtGui.QFormLayout(self)
         self.Form.addRow("Nickname",QtGui.QLineEdit())
         self.Form.addRow("Password",QtGui.QLineEdit())
@@ -119,8 +125,7 @@ class rattlekekzRegTab(rattlekekzBaseTab):
 
 class rattlekekzPrivTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(self,parent)
-        self.room,self.parent=room,caller
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QTextBrowser())
         Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
@@ -149,8 +154,7 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
 
 class rattlekekzMsgTab(rattlekekzPrivTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(self,parent)
-        self.room,self.parent=room,caller
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QLineEdit())
         self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
@@ -219,13 +223,13 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                     new.append(self.color+"("+i[0]+")")
                 else:
                     new.append(self.color+i[0])
-        new = self.parent.stringHandler(new,True)
+        new,self.completion = self.parent.stringHandler(new,True),self.parent.stringHandler(self.completion,True)
         self.userList.addItems(new)
         #self.input.completer().model().setStringList(self.completion)
 
     def complete(self):
         at=False
-        input = self.parent.stringHandler(self.input.text())
+        input = self.parent.stringHandler(self.input.text(),True)
         input,crap=input[:self.input.cursorPosition()].split(),input[self.input.cursorPosition():]
         if len(input) is not 0:
             nick = input.pop().lower()
@@ -236,7 +240,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
             newInput = nick
             if nick != "":
                 for i in self.completion:
-                    if nick in str(i[:len(nick)]).lower():
+                    if nick in i[:len(nick)].lower():
                         solutions.append(i)
                 if len(solutions) != 0 and len(solutions) != 1:
                     solutions.sort(key=lambda x: len(x))
@@ -246,19 +250,19 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                         else:
                             newInput=solutions[0][:x+1]
                     if at:
-                        newInput="@"+newInput
-                    input.append(str(newInput))
-                    self.input.setText(self.parent.stringHandler(" ".join(input)+crap,True))
+                        newInput=u"@"+newInput
+                    input.append(newInput)
+                    self.input.setText(self.parent.stringHandler(u" ".join(input)+crap,True))
                     self.input.setCursorPosition(len(self.input.text())-len(crap))
-                    self.addLine(" ".join(solutions))
+                    self.addLine(u" ".join(solutions))
                 elif len(solutions) is not 0:
                     if at:
-                        solutions[0]="@"+solutions[0]
+                        solutions[0]=u"@"+solutions[0]
                     input.append(str(solutions[0]))
                     if len(input) is not 1:
-                        self.input.setText(self.parent.stringHandler(" ".join(input)+" "+crap,True))
+                        self.input.setText(u" ".join(input)+u" "+crap)
                     else:
-                        self.input.setText(self.parent.stringHandler(" ".join(input)+", "+crap,True))
+                        self.input.setText(u" ".join(input)+u", "+crap)
                     self.input.setCursorPosition(len(self.input.text())-len(crap))
 
     def newTopic(self,topic):
@@ -267,8 +271,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
 
 class rattlekekzMailTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(self,parent)
-        self.room,self.parent=room,caller
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
         self.Box0.itemAt(0).widget().addWidget(QtGui.QListWidget())
@@ -330,8 +333,7 @@ class rattlekekzMailTab(rattlekekzBaseTab):
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(self,parent)
-        self.room,self.parent=room,caller
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
         Box = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         Box.addWidget(QtGui.QTextEdit())
         self.output = Box.itemAt(0).widget()
