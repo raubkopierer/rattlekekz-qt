@@ -78,4 +78,4 @@ class TabManager():
         del self.lookupRooms[0]
 
     def highlightTab(self,tab,highlight):
-        pass # TODO: Add this later on
+        self.getTab(tab).parent.alert(self.getTab(tab)) # Add highlight for single tabs
