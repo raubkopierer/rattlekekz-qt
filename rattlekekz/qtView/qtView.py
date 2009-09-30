@@ -22,7 +22,8 @@ copyright = """
 
 revision = "Git has no revisions 1"
 
-import sys
+import sys,os
+from glob import glob
 from re import search
 import re,urllib
 
@@ -103,7 +104,7 @@ class View(TabManager,iterator):
 
     def readSmilies(self):
         data=[]
-        for i in glob.glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'*.png'):
+        for i in glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'*.png'):
             data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
         return data
 
