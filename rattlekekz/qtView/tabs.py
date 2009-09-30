@@ -184,26 +184,30 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.completion=[]
         new=[]
         self.userList.clear()
-        #if color: # TODO: Add color parsing
-        #    for i in users:
-        #        self.completion.append(i[0])
-        #        if i[2] in 'x':
-        #            self.color='normal'
-        #        elif i[2] in 's':
-        #            self.color='green'
-        #        elif i[2] in 'c':
-        #            self.color='blue'
-        #        elif i[2] in 'o':
-        #            self.color='yellow'
-        #        elif i[2] in 'a':
-        #            self.color='red'
-        #        if i[1] == True:
-        #            self.color=self.color+'away'
-        #            new.append("<font color='#"+self.parent.colors[self.color]+"'>("+i[0]+")</font>")
-        #        else:
-        #            new.append("<font color='#"+self.parent.colors[self.color]+"'>"+i[0]+"</font>")
-        #else:
-        if True:
+        if color: # TODO: Add color parsing
+            for i in users:
+                self.completion.append(i[0])
+                if i[2] in 'x':
+                    self.color='normal'
+                elif i[2] in 's':
+                    self.color='green'
+                elif i[2] in 'c':
+                    self.color='blue'
+                elif i[2] in 'o':
+                    self.color='yellow'
+                elif i[2] in 'a':
+                    self.color='red'
+                if i[1] == True:
+                    self.color=self.color+'away'
+                    item=QtGui.QListWidgetItem(self.parent.stringHandler("("+i[0]+")",True))
+                else:
+                    item=QtGui.QListWidgetItem(self.parent.stringHandler(i[0],True))
+                item.setTextColor(QtGui.QColor(int(self.parent.colors[self.color][:2],16),int(self.parent.colors[self.color][2:4],16),int(self.parent.colors[self.color][4:],16)))
+                print item.textColor().getRgb()
+                new.append(item)
+            for i in new:
+                self.userList.addItem(i)
+        else:
             for i in users:
                 self.completion.append(i[0])
                 if i[2] in 'x':
@@ -220,8 +224,9 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                     new.append(self.color+"("+i[0]+")")
                 else:
                     new.append(self.color+i[0])
-        new,self.completion = self.parent.stringHandler(new,True),self.parent.stringHandler(self.completion,True)
-        self.userList.addItems(new)
+            new = self.parent.stringHandler(new,True)
+            self.userList.addItems(new)
+        self.completion=self.parent.stringHandler(self.completion,True)
         #self.input.completer().model().setStringList(self.completion)
 
     def complete(self):
