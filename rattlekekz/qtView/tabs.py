@@ -127,15 +127,14 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
         rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
-        self.Box0.addWidget(QtGui.QTextBrowser())
+        self.Box0.addWidget(rattlekekzOutputWidget())
         Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         Box2.addWidget(rattlekekzEditWidget())
         Box2.addWidget(QtGui.QPushButton("&Send"))
         self.Box0.addLayout(Box2)
         self.output=self.Box0.itemAt(0).widget() # QTextBrowser
-        self.output.setReadOnly(True)
-        self.output.setOpenLinks(False)
-        self.output.setHtml(u"")
+        self.output.addSmilies(self.parent.smilie_data)
+        #document=QtGui.QTextDocument(self)
         self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.defaultWidget=self.input
         self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
@@ -158,7 +157,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(QtGui.QLineEdit())
         self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
-        self.Box0.itemAt(1).widget().addWidget(QtGui.QTextBrowser())
+        self.Box0.itemAt(1).widget().addWidget(rattlekekzOutputWidget())
         self.Box0.itemAt(1).widget().addWidget(QtGui.QListWidget())
         Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         Box1.addWidget(rattlekekzEditWidget())
@@ -171,9 +170,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.userList.setFixedWidth(140)
         self.topicLine=self.Box0.itemAt(0).widget() # QLineEdit
         self.output=self.Box0.itemAt(1).widget().widget(0) # QTextBrowser
-        self.output.setReadOnly(True)
-        self.output.setOpenLinks(False)
-        self.output.setHtml(u"")
+        self.output.addSmilies(self.parent.smilie_data)
         self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.defaultWidget=self.input
         self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton

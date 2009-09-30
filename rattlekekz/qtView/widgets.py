@@ -76,6 +76,17 @@ class rattlekekzMainWidget(QtGui.QMainWindow):
     def closeEvent(self,event):
         self.emit(QtCore.SIGNAL("closed()"))
 
+class rattlekekzOutputWidget(QtGui.QTextBrowser):
+    def __init__(self,parent=None):
+        QtGui.QTextBrowser.__init__(self,parent)
+        self.setReadOnly(True)
+        self.setOpenLinks(False)
+        self.setHtml(u"")
+
+    def addSmilies(self,images):
+        for i in images:
+            self.document().addResource(self.document().ImageResource,i[0],i[1])
+
 class rattlekekzFileMenu(QtGui.QMenu):
     def __init__(self,title="",parent=None):
         QtGui.QMenu.__init__(self,title,parent)

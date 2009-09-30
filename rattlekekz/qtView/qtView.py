@@ -56,6 +56,7 @@ class View(TabManager,iterator):
         self.addTab("$login",rattlekekzLoginTab)
         self.changeTab("$login")
         self.main.show()
+        self.smilie_data=self.readSmilies()
         self.smilies={"s6":":-)",
                  "s4":":-(",
                  "s1":":-/",
@@ -100,6 +101,12 @@ class View(TabManager,iterator):
         self.main.connect(self.main,QtCore.SIGNAL("closed()"),self.quit)
         self.main.connect(self.tabs,QtCore.SIGNAL("currentChanged(int)"),self.activateTab)
 
+    def readSmilies(self):
+        data=[]
+        for i in glob.glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'*.png'):
+            data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
+        return data
+
     def activateTab(self,integer):
         self.ShownRoom=self.stringHandler(self.tabs.tabText(integer))
         self.tabs.widget(integer).gotFocus()
@@ -136,7 +143,7 @@ class View(TabManager,iterator):
                 #image=urllib2.urlopen(text[i]).read()
                 #for y in range(self.tabs.count()):
                 #    if isinstance(self.tabs.widget(y),rattlekekzPrivTab):
-                #        self.tabs.widget(y).output.document().addResource(QtGui.QTextDocument.ImageResource,QtGui.QUrl("mydata://"+self.stringHandler(text[i])),QVariant(image))
+                #        self.tabs.widget(y).output.document().addResource(QtGui.QTextDocument.ImageResource,QtCore.QUrl("mydata://"+self.stringHandler(text[i])),QVariant(image))
                 #        msg.append(("<img src='"+"mydata://"+self.stringHandler(text[i])+"'>"))
                 continue
             if len(format[i]) > 1:
@@ -168,8 +175,7 @@ class View(TabManager,iterator):
                     font[0].append("<i>")
                     font[0].append("</i>")
                 if a == "sb":
-                    src="http://kekz.net/forum/Smileys/default/"+text[i]+".png"
-                    
+                    text[i]="<img src='"+"smilie://"+self.stringHandler(text[i])+".png' />"
                 if a == "button":
                     color=""
                     font[0].append("<a href='button:"+text[i]+"'>")
