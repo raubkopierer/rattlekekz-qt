@@ -265,11 +265,14 @@ class View(TabManager,iterator):
     def registerNick(self, nick, passwd, email):
         self.iterPlugins('registerNick', [nick, passwd, email])
 
+    def startedConnection(self):
+        print "STUB: connecting ..."
+
     def connectionLost(self,reason):
-        pass
+        print "STUB: connection lost, reason:",reason
 
     def connectionFailed(self):
-        print "fail!"
+        print "STUB: connection attempt failed"
 
     def successLogin(self,nick,status,room):
         self.nickname=nick
