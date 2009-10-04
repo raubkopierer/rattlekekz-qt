@@ -91,8 +91,8 @@ class View(TabManager,iterator):
     def _setup(self):
         self.main=rattlekekzMainWidget()
         self.main.setWindowTitle(self.name)
+        self.main.setMenuBar(rattlekekzMenuBar())
         self.menu=self.main.menuBar()
-        self.menu.addMenu("&File") # TODO: add shit
         self.main.setCentralWidget(QtGui.QTabWidget())
         self.tabs=self.main.centralWidget()
         self.tabs.setMovable(True)
@@ -100,6 +100,8 @@ class View(TabManager,iterator):
         self.tabs.setMinimumSize(400,350)
         self.main.connect(self.tabs,QtCore.SIGNAL("tabCloseRequested(int)"),self.closeTab)
         self.main.connect(self.main,QtCore.SIGNAL("closed()"),self.quit)
+        self.main.connect(self.menu,QtCore.SIGNAL("quit()"),self.quit)
+        self.main.connect(self.menu,QtCore.SIGNAL("config()"),self.openConfig)
         self.main.connect(self.tabs,QtCore.SIGNAL("currentChanged(int)"),self.activateTab)
 
     def readSmilies(self):
@@ -123,6 +125,9 @@ class View(TabManager,iterator):
         self.iterPlugins('quitConnection')
         reactor.stop()
         sys.exit()
+
+    def openConfig(self):
+        print "STUB: implement config tab"
 
     def deparse(self,msg):
         text,format=self.controller.decode(msg)

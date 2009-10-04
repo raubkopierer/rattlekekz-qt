@@ -87,12 +87,17 @@ class rattlekekzOutputWidget(QtGui.QTextBrowser):
         for i in images:
             self.document().addResource(self.document().ImageResource,i[0],i[1])
 
-class rattlekekzFileMenu(QtGui.QMenu):
-    def __init__(self,title="",parent=None):
-        QtGui.QMenu.__init__(self,title,parent)
-        self.addAction("Config")#,self.actionTriggered)
-        self.addAction("Quit")#,self.actionTriggered)
+class rattlekekzMenuBar(QtGui.QMenuBar):
+    def __init__(self,parent=None):
+        QtGui.QMenuBar.__init__(self,parent)
+        self.fileMenu=self.addMenu("&File")
+        self.fileMenu.addAction("Config")
+        self.fileMenu.addAction("Quit")
+        self.connect(self.fileMenu,QtCore.SIGNAL("triggered(QAction *)"),self.actionTriggered)
 
     def actionTriggered(self,action):
-        if action.text() == "Quit":
+        string = action.text()
+        if string == "Config":
+            self.emit(QtCore.SIGNAL("config()"))
+        elif string == "Quit":
             self.emit(QtCore.SIGNAL("quit()"))
