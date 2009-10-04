@@ -62,8 +62,8 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         Form.itemAt(6).layout().addWidget(QtGui.QPushButton("&Login"))
         Form.itemAt(6).layout().addWidget(QtGui.QPushButton("&Register"))
         self.Box.addLayout(Form)
-        self.roomList = self.Box.itemAt(0).widget()
-        self.roomList.setSelectionMode(self.roomList.NoSelection) # TODO: make cool room selection
+        self.roomList = self.Box.itemAt(0).widget() # QListWidget
+        self.roomList.setSelectionMode(self.roomList.MultiSelection)
         self.roomList.setAlternatingRowColors(True)
         self.roomList.setFixedWidth(140)
         self.nickInput = self.Box.itemAt(1).layout().itemAt(1).widget() # QLineEdit
@@ -74,6 +74,7 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         self.registerButton = self.Box.itemAt(1).layout().itemAt(6).layout().itemAt(1).widget() # QPushButton
         self.passInput.setEchoMode(QtGui.QLineEdit.Password)
         self.loginButton.setDisabled(True)
+        self.connect(self.roomList,QtCore.SIGNAL("itemSelectionChanged()"),self.selectRooms)
         self.connect(self.loginButton,QtCore.SIGNAL("clicked()"),self.sendLogin)
         self.connect(self.registerButton,QtCore.SIGNAL("clicked()"),self.registerNick)
 
@@ -88,6 +89,12 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
     def sendLogin(self):
         nick,password,rooms=self.parent.stringHandler([self.nickInput.text(),self.passInput.text(),self.roomInput.text()])
         self.parent.sendLogin(nick,password,rooms)
+
+    def selectRooms(self):
+        rooms=[]
+        for i in self.roomList.selectedItems():
+            rooms.append(self.parent.stringHandler(i.text(),True).split(" ")[0])
+            self.roomInput.setText(u",".join(rooms))
 
     def registerNick(self):
         self.parent.addTab("$register",rattlekekzRegTab)
@@ -184,7 +191,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.completion=[]
         new=[]
         self.userList.clear()
-        if color: # TODO: Add color parsing
+        if color:
             for i in users:
                 self.completion.append(i[0])
                 if i[2] in 'x':

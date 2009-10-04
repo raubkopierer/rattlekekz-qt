@@ -191,13 +191,6 @@ class View(TabManager,iterator):
                 msg.append("<font color='#"+self.colors[color]+"'>"+"".join(font[0])+text[i]+"".join(font[1])+"</font>")
             else:
                 msg.append("".join(font[0])+text[i]+"".join(font[1]))
-            #for i in range(len(msg)):
-            #    if type(msg[i][1]) is unicode:
-            #        msg[i] = (msg[i][0],msg[i][1].encode("utf_8"))
-            ##self.lookupRooms[room].addLine(color)    #they are just for debugging purposes, but don't delete them
-            ##self.lookupRooms[room].addLine(text[i])
-        #for i in range(len(msg)): # TODO: Add real parsing
-        #    msg[i]=msg[i][1]
         return msg
 
     def escapeText(self,text):
@@ -252,8 +245,8 @@ class View(TabManager,iterator):
 
     def receivedPreLoginData(self,rooms,array):
         self.isConnected=True
-        self.addTab("$login",self.rattlekekzLoginTab)
-        self.getTab("$login").receivedPreLoginData(rooms,array) # TODO: add failsafe
+        self.addTab("$login",rattlekekzLoginTab)
+        self.getTab("$login").receivedPreLoginData(rooms,array)
 
     def startConnection(self,host,port):
         reactor.connectSSL(host, port, self.controller.model, self.controller.model)
