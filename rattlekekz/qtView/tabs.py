@@ -203,7 +203,6 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                 else:
                     item=QtGui.QListWidgetItem(self.parent.stringHandler(i[0],True))
                 item.setTextColor(QtGui.QColor(int(self.parent.colors[self.color][:2],16),int(self.parent.colors[self.color][2:4],16),int(self.parent.colors[self.color][4:],16)))
-                print item.textColor().getRgb()
                 new.append(item)
             for i in new:
                 self.userList.addItem(i)
