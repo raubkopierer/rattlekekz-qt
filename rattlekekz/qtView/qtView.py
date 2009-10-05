@@ -112,6 +112,7 @@ class View(TabManager,iterator):
 
     def activateTab(self,integer):
         self.ShownRoom=self.stringHandler(self.tabs.tabText(integer))
+        self.tabs.tabBar().setTabTextColor(integer,QtCore.Qt.black)
         self.tabs.widget(integer).gotFocus()
 
     def closeTab(self,integer):

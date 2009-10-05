@@ -78,4 +78,12 @@ class TabManager():
         del self.lookupRooms[0]
 
     def highlightTab(self,tab,highlight):
-        self.getTab(tab).parent.alert(self.getTab(tab).parent.main) # Add highlight for single tabs
+        widget=self.getTab(tab)
+        widget.parent.alert(widget.parent.main)
+        if tab.lower() != self.ShownRoom.lower():
+            if highlight == 1:
+                self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),QtCore.Qt.gray)
+            elif highlight == 2:
+                self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),QtCore.Qt.yellow)
+            elif highlight == 3:
+                self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),QtCore.Qt.red)
