@@ -92,7 +92,9 @@ class View(TabManager,iterator):
         self.main=rattlekekzMainWidget()
         self.main.setWindowTitle(self.name)
         self.main.setMenuBar(rattlekekzMenuBar())
+        self.main.setStatusBar(rattlekekzStatusBar())
         self.menu=self.main.menuBar()
+        self.status=self.main.statusBar()
         self.main.setCentralWidget(QtGui.QTabWidget())
         self.tabs=self.main.centralWidget()
         self.tabs.setMovable(True)
@@ -246,6 +248,7 @@ class View(TabManager,iterator):
 
     def receivedPreLoginData(self,rooms,array):
         self.isConnected=True
+        self.status.showMessage("connected")
         self.addTab("$login",rattlekekzLoginTab)
         self.getTab("$login").receivedPreLoginData(rooms,array)
 
@@ -254,7 +257,14 @@ class View(TabManager,iterator):
         reactor.run()
 
     def addRoom(self,room,tab):
-        tablist={"ChatRoom":rattlekekzMsgTab,"PrivRoom":rattlekekzPrivTab,"InfoRoom":rattlekekzInfoTab,"MailRoom":rattlekekzMailTab,"SecureRoom":rattlekekzSecureTab,"EditRoom":rattlekekzEditTab}
+        tablist={"ChatRoom":rattlekekzMsgTab,
+                 "PrivRoom":rattlekekzPrivTab,
+                 "InfoRoom":rattlekekzInfoTab,
+                 "WhoisRoom":rattlekekzInfoTab,
+                 "MailRoom":rattlekekzMailTab,
+                 "SecureRoom":rattlekekzSecureTab,
+                 "WhoisEditRoom":rattlekekzWhoisEditTab,
+                 "MailEditRoom":rattlekekzMailEditTab}
         self.addTab(room,tablist[tab])
 
     def newTopic(self,room,topic):
@@ -267,13 +277,13 @@ class View(TabManager,iterator):
         self.iterPlugins('registerNick', [nick, passwd, email])
 
     def startedConnection(self):
-        print "STUB: connecting ..."
+        self.status.showMessage("connecting ...")
 
     def connectionLost(self,reason):
-        print "STUB: connection lost, reason:",reason
+        self.status.showMessage(self.stringHandler("connection lost, reason:"+reason,True))
 
     def connectionFailed(self):
-        print "STUB: connection attempt failed"
+        self.status.showMessage("connection attempt failed")
 
     def successLogin(self,nick,status,room):
         self.nickname=nick
@@ -283,7 +293,7 @@ class View(TabManager,iterator):
         self.delTab("$login")
 
     def successRegister(self):
-        print "STUB: nick registered"
+        self.status.showMessage("nick registered")
 
     def successNewPassword(self):
         pass
@@ -298,7 +308,7 @@ class View(TabManager,iterator):
         pass
 
     def receivedPing(self,deltaPing):
-        pass
+        self.status.showMessage(self.stringHandler("Ping: "+str(deltaPing)+" ms",True))
 
     def printMsg(self,room,msg):
         print "<%s> %s" % (self.stringHandler(room),"".join(self.stringHandler(msg)))
@@ -363,7 +373,10 @@ class View(TabManager,iterator):
         #    self.getTab(self.ShownRoom).addLine("Info: "+self.stringHandler(message))
 
     def receivedWhois(self,nick,array):
-        pass
+        title=u"whois: "+self.stringHandler(nick,True)
+        self.addRoom(title,"WhoisRoom")
+        out = map(lambda x:"".join(self.deparse(x)), array)
+        self.getTab(title).addWhois(out)
 
     def MailInfo(self,info):
         pass

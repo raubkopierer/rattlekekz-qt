@@ -101,3 +101,7 @@ class rattlekekzMenuBar(QtGui.QMenuBar):
             self.emit(QtCore.SIGNAL("config()"))
         elif string == "Quit":
             self.emit(QtCore.SIGNAL("quit()"))
+
+class rattlekekzStatusBar(QtGui.QStatusBar):
+    def __init__(self,parent=None):
+        QtGui.QMenuBar.__init__(self,parent)

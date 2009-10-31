@@ -184,6 +184,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
+        self.connect(self.topicLine,QtCore.SIGNAL("returnPressed()"),self.setTopic)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
     def listUser(self,users,color=True):
@@ -273,6 +274,11 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                         self.input.setText(u" ".join(input)+u", "+crap)
                     self.input.setCursorPosition(len(self.input.text())-len(crap))
 
+    def setTopic(self):
+        if self.input.hasAcceptableInput():
+            input = self.parent.stringHandler(self.topicLine.text())
+            self.parent.sendStr(self.parent.stringHandler(self.room),"/topic "+input)
+
     def newTopic(self,topic):
         self.topicLine.setText(self.parent.stringHandler(topic,True))
         self.addLine(self.parent.stringHandler("Topic: "+topic,True))
@@ -339,6 +345,10 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         print msg
         self.mailOutput.append("".join(self.parent.stringHandler(msg,True)))
 
+class rattlekekzMailEditTab(rattlekekzBaseTab):
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(parent,caller,room)
+
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
         rattlekekzBaseTab.__init__(self,parent,caller,room)
@@ -349,11 +359,18 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
         self.output.setHtml("")
         self.output.setReadOnly(True)
 
+    def addWhois(self,whois):
+        self.output.setHtml("")
+        for i in whois:
+            self.addLine(i)
+
     def addLine(self,msg):
         self.output.append(self.parent.stringHandler(msg,True))
 
 class rattlekekzSecureTab(rattlekekzBaseTab):
-    pass
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(parent,caller,room)
 
-class rattlekekzEditTab(rattlekekzBaseTab):
-    pass
+class rattlekekzWhoisEditTab(rattlekekzBaseTab):
+    def __init__(self,parent=None,caller=None,room=None):
+        rattlekekzBaseTab.__init__(parent,caller,room)
