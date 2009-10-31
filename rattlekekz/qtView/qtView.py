@@ -263,7 +263,7 @@ class View(TabManager,iterator):
                  "WhoisRoom":rattlekekzInfoTab,
                  "MailRoom":rattlekekzMailTab,
                  "SecureRoom":rattlekekzSecureTab,
-                 "WhoisEditRoom":rattlekekzWhoisEditTab,
+                 "EditRoom":rattlekekzWhoisEditTab,
                  "MailEditRoom":rattlekekzMailEditTab}
         self.addTab(room,tablist[tab])
 
@@ -275,6 +275,12 @@ class View(TabManager,iterator):
 
     def registerNick(self, nick, passwd, email):
         self.iterPlugins('registerNick', [nick, passwd, email])
+
+    def changePassword(self, oldPassword, newPassword):
+        self.iterPlugins('changePassword', [oldPassword, newPassword])
+
+    def updateProfile(self, newName, newLocation, newHomepage, newHobbies, newSignature, passwd):
+        self.iterPlugins('updateProfile', [newName, newLocation, newHomepage, newHobbies, newSignature, passwd])
 
     def startedConnection(self):
         self.status.showMessage("connecting ...")
@@ -296,13 +302,14 @@ class View(TabManager,iterator):
         self.status.showMessage("nick registered")
 
     def successNewPassword(self):
-        pass
+        self.status.showMessage("password changed")
 
-    def receivedProfile(self,name,ort,homepage,hobbies,signature):
-        pass
+    def receivedProfile(self,name,location,homepage,hobbies,signature):
+        self.changeTab("$edit")
+        self.getTab("$edit").receivedProfile(name,location,homepage,hobbies,signature)
 
     def successNewProfile(self):
-        pass
+        self.status.showMessage("profile updated")
 
     def securityCheck(self, infotext):
         pass
@@ -315,10 +322,10 @@ class View(TabManager,iterator):
         self.getTab(room).addLine("".join(msg))
 
     def gotException(self, message):
-        print "STUB:",message
+        self.status.showMessage(message)
 
     def gotLoginException(self,message):
-        print "STUB:",message
+        self.status.showMessage(message)
 
     def listUser(self,room,users):
         usercolors = self.controller.getValue("usercolors")
@@ -375,6 +382,7 @@ class View(TabManager,iterator):
     def receivedWhois(self,nick,array):
         title=u"whois: "+self.stringHandler(nick,True)
         self.addRoom(title,"WhoisRoom")
+        self.changeTab(title)
         out = map(lambda x:"".join(self.deparse(x)), array)
         self.getTab(title).addWhois(out)
 

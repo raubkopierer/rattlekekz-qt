@@ -347,7 +347,7 @@ class rattlekekzMailTab(rattlekekzBaseTab):
 
 class rattlekekzMailEditTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(parent,caller,room)
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
@@ -369,8 +369,58 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
 
 class rattlekekzSecureTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(parent,caller,room)
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
 
 class rattlekekzWhoisEditTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
-        rattlekekzBaseTab.__init__(parent,caller,room)
+        rattlekekzBaseTab.__init__(self,parent,caller,room)
+        Box = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
+        Box.addLayout(QtGui.QFormLayout())
+        for i in ["password","new password","new password 2x","name","location","homepage","hobbies"]:
+            Box.itemAt(0).layout().addRow(i+": ",QtGui.QLineEdit())
+        Box.addWidget(QtGui.QLabel("signature:"))
+        Box.addWidget(QtGui.QTextEdit())
+        Box.addLayout(QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight))
+        Box.itemAt(3).layout().addWidget(QtGui.QPushButton("&update"))
+        Box.itemAt(3).layout().addWidget(QtGui.QPushButton("cha&nge password"))
+        self.password=Box.itemAt(0).layout().itemAt(1).widget()
+        self.newpassword1=Box.itemAt(0).layout().itemAt(3).widget()
+        self.newpassword2=Box.itemAt(0).layout().itemAt(5).widget()
+        self.name=Box.itemAt(0).layout().itemAt(7).widget()
+        self.location=Box.itemAt(0).layout().itemAt(9).widget()
+        self.homepage=Box.itemAt(0).layout().itemAt(11).widget()
+        self.hobbies=Box.itemAt(0).layout().itemAt(13).widget()
+        self.signature=Box.itemAt(2).widget()
+        self.updateButton=Box.itemAt(3).layout().itemAt(0).widget()
+        self.passwordButton=Box.itemAt(3).layout().itemAt(1).widget()
+        self.password.setEchoMode(QtGui.QLineEdit.Password)
+        self.newpassword1.setEchoMode(QtGui.QLineEdit.Password)
+        self.newpassword2.setEchoMode(QtGui.QLineEdit.Password)
+        self.connect(self.updateButton,QtCore.SIGNAL("clicked()"),self.updateProfile)
+        self.connect(self.passwordButton,QtCore.SIGNAL("clicked()"),self.updatePassword)
+
+    def receivedProfile(self,name,location,homepage,hobbies,signature):
+        self.name.setText(self.parent.stringHandler(name,True))
+        self.location.setText(self.parent.stringHandler(location,True))
+        self.homepage.setText(self.parent.stringHandler(homepage,True))
+        self.hobbies.setText(self.parent.stringHandler(hobbies,True))
+        self.signature.setText(self.parent.stringHandler(signature,True))
+
+    def updateProfile(self):
+        password=self.parent.stringHandler(self.password.text())
+        name=self.parent.stringHandler(self.name.text())
+        location=self.parent.stringHandler(self.location.text())
+        homepage=self.parent.stringHandler(self.homepage.text())
+        hobbies=self.parent.stringHandler(self.hobbies.text())
+        signature=self.parent.stringHandler(self.signature.toPlainText())
+        self.parent.updateProfile(name,location,homepage,hobbies,signature,password)
+
+    def updatePassword(self):
+        password=self.parent.stringHandler(self.password.text())
+        newpassword1=self.parent.stringHandler(self.newpassword1.text())
+        newpassword2=self.parent.stringHandler(self.newpassword1.text())
+        if newpassword1 == newpassword2:
+            print "sending passwords"
+            self.parent.changePassword(password,newpassword1)
+        else:
+            self.parent.status.showMessage("new passwords don't match!")
