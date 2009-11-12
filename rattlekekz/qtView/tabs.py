@@ -290,7 +290,7 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
         self.Box0.itemAt(0).widget().addWidget(QtGui.QListWidget())
         self.Box0.itemAt(0).widget().addWidget(QtGui.QTextBrowser())
-        Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,self)
+        Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         Box1.addWidget(QtGui.QPushButton("re&fresh"))
         Box1.addWidget(QtGui.QPushButton("&Response"))
         Box1.addWidget(QtGui.QPushButton("&new Mail"))
@@ -329,16 +329,16 @@ class rattlekekzMailTab(rattlekekzBaseTab):
         print "get mail",index
 
     def newMail(self):
-        print "STUB: implement mailEdit"
+        self.parent.openMailEditTab()
 
     def respondMail(self):
-        print "STUB: implement mailEdit"
+        self.parent.status.showMessage("STUB: implement response")
 
     def delMail(self):
-        print "STUB: implement delete"
+        self.parent.status.showMessage("STUB: implement delete")
 
     def delReadedMail(self):
-        print "STUB: implement delete"
+        self.parent.status.showMessage("STUB: implement delete")
 
     def addLine(self,msg):
         self.mailOutput.setHtml(u"")
@@ -348,6 +348,28 @@ class rattlekekzMailTab(rattlekekzBaseTab):
 class rattlekekzMailEditTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
         rattlekekzBaseTab.__init__(self,parent,caller,room)
+        Box = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
+        Box.addLayout(QtGui.QFormLayout())
+        Box.itemAt(0).layout().addRow("mail to: ",QtGui.QLineEdit())
+        Box.addWidget(QtGui.QTextEdit())
+        Box.addWidget(QtGui.QPushButton("&Send"))
+        self.receiver=Box.itemAt(0).layout().itemAt(1).widget()
+        self.input=Box.itemAt(1).widget()
+        self.send=Box.itemAt(2).widget()
+        self.defaultWidget=self.receiver
+        self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendMail)
+
+    def setContent(self,receiver="",content=""):
+        self.receiver.setText(receiver)
+        self.input.setText(content)
+
+    def responseMail(self,mail):
+        self.parent.status.showMessage("STUB: implement response")
+
+    def sendMail(self):
+        receiver,input=self.parent.stringHandler([self.receiver.text(),self.input.toPlainText()])
+        input=input.replace("\n","~n~")
+        self.parent.sendMail(receiver,input)
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):

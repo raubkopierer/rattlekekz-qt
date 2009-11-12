@@ -389,9 +389,17 @@ class View(TabManager,iterator):
     def MailInfo(self,info):
         pass
 
+    def openMailEditTab(self,receiver=""):
+        tabname="$mail_to"
+        if receiver!="":
+            tabname=tabname+" "+receiver
+        self.addTab(tabname,rattlekekzMailEditTab)
+        self.getTab(tabname).setContent(receiver)
+        self.changeTab(tabname)
+
     def openMailTab(self):
-        self.addTab("$mail",rattlekekzMailTab)
-        self.changeTab("$mail")
+        self.addTab("$mails",rattlekekzMailTab)
+        self.changeTab("$mails")
 
     def getMail(self,index):
         self.iterPlugins('getMail', [index])
@@ -401,7 +409,7 @@ class View(TabManager,iterator):
 
     def receivedMails(self,userid,mailcount,mails):
         self.openMailTab()
-        self.getTab("$mail").receivedMails(userid,mailcount,mails)
+        self.getTab("$mails").receivedMails(userid,mailcount,mails)
 
     def printMail(self,user,date,mail):
         self.openMailTab()
@@ -409,10 +417,13 @@ class View(TabManager,iterator):
         end = u"°np°---end of mail---°np°"
         mail = header + mail + end
         msg = self.deparse(mail)
-        self.getTab("$mail").addLine(msg)
+        self.getTab("$mails").addLine(msg)
 
     def sendStr(self,channel,string):
         self.iterPlugins('sendStr', [channel, string])
+
+    def sendMail(self,nick,msg):
+        self.iterPlugins('sendMail', [nick, msg])
 
     def timestamp(self, string):
         return "<font color='#"+self.colors["green"]+"'>"+string+"</font>"
