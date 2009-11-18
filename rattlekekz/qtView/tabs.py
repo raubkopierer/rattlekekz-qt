@@ -29,6 +29,7 @@ class rattlekekzBaseTab(QtGui.QWidget):
         QtGui.QWidget.__init__(self,parent)
         self.room,self.parent=room,caller
         self.defaultWidget=self
+        self.highlight=0
 
     def clickedURL(self,url):
         string = url.toString().toLower()
@@ -44,6 +45,7 @@ class rattlekekzBaseTab(QtGui.QWidget):
             self.parent.controller.openURL("http://"+url.toString())
 
     def gotFocus(self):
+        self.highlight=0
         self.defaultWidget.setFocus()
 
     def fu(self):

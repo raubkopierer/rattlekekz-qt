@@ -26,6 +26,9 @@ class TabManager():
     def __init__(self):
         self.ShownRoom=None
         self.lookupRooms=[]
+        self.highlight={1:QtCore.Qt.gray,
+                        2:QtCore.Qt.yellow,
+                        3:QtCore.Qt.red}
 
     def changeTab(self, tabname):
         """changes the Tab to tabname"""
@@ -79,11 +82,7 @@ class TabManager():
 
     def highlightTab(self,tab,highlight):
         widget=self.getTab(tab)
-        widget.parent.alert(widget.parent.main)
-        if tab.lower() != self.ShownRoom.lower():
-            if highlight == 1:
-                self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),QtCore.Qt.gray)
-            elif highlight == 2:
-                self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),QtCore.Qt.yellow)
-            elif highlight == 3:
-                self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),QtCore.Qt.red)
+        if (tab.lower() != self.ShownRoom.lower()) and (widget.highlight<highlight):
+            widget.parent.alert(widget.parent.main)
+            self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),self.highlight[highlight])
+            widget.highlight=highlight
