@@ -167,7 +167,6 @@ class View(TabManager,iterator):
             #    continue                           # 
             if text[i] == "":                       #
                 continue                            #
-            print text[i]
             text[i]=self.urls.sub(r'<a href="\1">\1</a>',text[i])
             form=format[i].split(",")
             color=""
