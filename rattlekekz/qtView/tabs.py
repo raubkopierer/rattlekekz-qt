@@ -22,7 +22,7 @@ copyright = """
 
 from PyQt4 import QtCore,QtGui
 from rattlekekz.qtView.widgets import *
-import re,webbrowser
+import webbrowser
 
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
