@@ -34,11 +34,11 @@ class rattlekekzBaseTab(QtGui.QWidget):
     def clickedURL(self,url):
         string = url.toString().toLower()
         if string.startsWith("button:"):
-            string = string.mid(7)
-            if string == "/joininvite":
-                self.parent.sendStr(self.parent.stringHandler(self.room),"/joininvite")
-            elif string == "/goinvite":
-                self.parent.sendStr(self.parent.stringHandler(self.room),"/goinvite")
+            self.parent.sendStr(self.parent.stringHandler(self.room),self.parent.stringHandler(string[7:]))
+            #if string == "/joininvite":
+            #    self.parent.sendStr(self.parent.stringHandler(self.room),"/joininvite")
+            #elif string == "/goinvite":
+            #    self.parent.sendStr(self.parent.stringHandler(self.room),"/goinvite")
         elif not url.isRelative():
             self.parent.controller.openURL(url.toString())
         else:
