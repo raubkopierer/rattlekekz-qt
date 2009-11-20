@@ -19,6 +19,9 @@ class rattlekekzEditWidget(QtGui.QLineEdit):
             if event.key() != QtCore.Qt.Key_Backtab:
                 if self.keyPressEvent(event):
                     taken=True
+            elif not event.modifiert().__eq__(QtCore.Qt.NoModifier):
+                if self.keyPressEvent(event):
+                    taken=True
             else:
                 taken=True
         elif event.modifiers().__eq__(QtCore.Qt.NoModifier):
