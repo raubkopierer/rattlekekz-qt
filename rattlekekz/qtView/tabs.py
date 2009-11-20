@@ -204,7 +204,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                 elif i[2] in 'c':
                     self.color='blue'
                 elif i[2] in 'o':
-                    self.color='yellow'
+                    self.color='orange'
                 elif i[2] in 'a':
                     self.color='red'
                 if i[1] == True:

@@ -73,8 +73,8 @@ class View(TabManager,iterator):
                  "s12":":-E",
                  "s13":":-G"}
         self.colors={"red":"FF0000",
-                     "blue":"020285",
-                     "green":"015401",
+                     "blue":"0000FF",
+                     "green":"008000",
                      "gray":"696969",
                      "cyan":"00FFFF",
                      "magenta":"FF00FF",
@@ -83,10 +83,10 @@ class View(TabManager,iterator):
                      "yellow":"FFFF00",
                      "normal":"000000",
                      "normalaway":"696969",
-                     "greenaway":"215421",
-                     "blueaway":"222285",
-                     "yellowaway":"FFA500",
-                     "redaway":"FF2020"}
+                     "greenaway":"4D804D",
+                     "blueaway":"5050E6",
+                     "orangeaway":"E5B151",
+                     "redaway":"E65151"}
 
     def _setup(self):
         self.main=rattlekekzMainWidget()
