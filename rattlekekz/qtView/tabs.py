@@ -32,6 +32,7 @@ class rattlekekzBaseTab(QtGui.QWidget):
         self.highlight=0
 
     def clickedURL(self,url):
+        self.defaultWidget.setFocus()
         string = url.toString().toLower()
         if string.startsWith("button:"):
             self.parent.sendStr(self.parent.stringHandler(self.room),self.parent.stringHandler(string[7:]))
@@ -188,6 +189,14 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.topicLine,QtCore.SIGNAL("returnPressed()"),self.setTopic)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
+        self.connect(self.userList,QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem *)"),self.openWhois)
+
+    def openWhois(self,item):
+        string=self.parent.stringHandler(item.text())
+        if not string.startswith("("):
+            self.parent.sendStr(self.parent.stringHandler(self.room),"/w "+string)
+        else:
+            self.parent.sendStr(self.parent.stringHandler(self.room),"/w "+string[1:-1])
 
     def listUser(self,users,color=True):
         """takes a list of users and updates the Userlist of the room"""
