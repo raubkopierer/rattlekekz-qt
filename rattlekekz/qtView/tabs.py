@@ -283,7 +283,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
 
     def newTopic(self,topic):
         self.topicLine.setText(self.parent.stringHandler(topic,True))
-        self.addLine(self.parent.stringHandler("Topic: "+topic,True))
+        self.addLine(self.parent.stringHandler("Topic: "+"".join(self.parent.deparse(topic)),True))
 
 class rattlekekzMailTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
