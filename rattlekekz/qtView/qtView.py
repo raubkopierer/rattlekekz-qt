@@ -389,6 +389,13 @@ class View(TabManager,iterator):
     def MailInfo(self,info):
         pass
 
+    def openLinkTab(self,room,links):
+        room,links=self.stringHandler(room,True),self.stringHandler(links,True)
+        self.addTab("$links of "+room,rattlekekzInfoTab)
+        self.changeTab("$links of "+room)
+        for i in links:
+            self.getTab("$links of "+room).addLine('<a href="'+i+'">'+i+'</a>')
+
     def openMailEditTab(self,receiver=""):
         tabname="$mail_to"
         if receiver!="":
