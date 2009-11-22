@@ -327,7 +327,7 @@ class rattlekekzMailTab(rattlekekzBaseTab):
     def receivedMails(self,userid,mailcount,mails):
         post=[]
         for i in mails:
-            if i.has_key("unread"):
+            if i["unread"]==1:
                 post.append(self.parent.stringHandler(str(i["index"])+".: von "+i["from"]+", um "+i["date"]+" (unread): \n"+i["stub"],True))
             else:
                 post.append(self.parent.stringHandler(str(i["index"])+".: von "+i["from"]+", um "+i["date"]+": \n"+i["stub"],True))
