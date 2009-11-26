@@ -386,11 +386,12 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
         rattlekekzBaseTab.__init__(self,parent,caller,room)
         Box = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
-        Box.addWidget(QtGui.QTextEdit())
+        Box.addWidget(rattlekekzOutputWidget())
         self.output = Box.itemAt(0).widget()
         self.defaultWidget=self.output
         self.output.setHtml("")
         self.output.setReadOnly(True)
+        self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
     def addWhois(self,whois):
         self.output.setHtml("")
