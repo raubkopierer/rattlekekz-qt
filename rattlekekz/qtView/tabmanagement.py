@@ -82,7 +82,8 @@ class TabManager():
 
     def highlightTab(self,tab,highlight):
         widget=self.getTab(tab)
-        if (tab.lower() != self.ShownRoom.lower()) and (widget.highlight<highlight):
+        if widget.highlight<highlight:
             widget.parent.alert(widget.parent.main)
-            self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),self.highlight[highlight])
-            widget.highlight=highlight
+            if tab.lower() != self.ShownRoom.lower():
+                self.tabs.tabBar().setTabTextColor(self.tabs.indexOf(widget),self.highlight[highlight])
+                widget.highlight=highlight
