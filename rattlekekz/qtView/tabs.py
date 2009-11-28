@@ -80,9 +80,14 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
         self.connect(self.roomList,QtCore.SIGNAL("itemSelectionChanged()"),self.selectRooms)
         self.connect(self.loginButton,QtCore.SIGNAL("clicked()"),self.sendLogin)
         self.connect(self.registerButton,QtCore.SIGNAL("clicked()"),self.registerNick)
+        self.connect(self.nickInput,QtCore.SIGNAL("returnPressed()"),self.returnPressed)
+        self.connect(self.passInput,QtCore.SIGNAL("returnPressed()"),self.returnPressed)
+        self.connect(self.roomInput,QtCore.SIGNAL("returnPressed()"),self.returnPressed)
+        self.prelogin=False
 
     def receivedPreLoginData(self,rooms,array):
         self.loginButton.setEnabled(True)
+        self.prelogin=True
         list=[]
         for i in rooms:
             list.append(i["name"]+" ("+str(i["users"])+"/"+str(i["max"])+")")
@@ -91,7 +96,8 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
 
     def sendLogin(self):
         nick,password,rooms=self.parent.stringHandler([self.nickInput.text(),self.passInput.text(),self.roomInput.text()])
-        self.parent.sendLogin(nick,password,rooms)
+        if self.prelogin:
+            self.parent.sendLogin(nick,password,rooms)
 
     def selectRooms(self):
         rooms=[]
@@ -102,6 +108,12 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
     def registerNick(self):
         self.parent.addTab("$register",rattlekekzRegTab)
         self.parent.changeTab("$register")
+
+    def returnPressed(self):
+        if self.focusWidget() != self.roomInput:
+            self.focusNextChild()
+        else:
+            self.sendLogin()
 
 class rattlekekzRegTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
