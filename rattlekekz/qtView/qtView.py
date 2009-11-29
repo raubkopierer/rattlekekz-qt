@@ -44,7 +44,7 @@ rev=search("\d+",revision).group()
 
 class View(TabManager,iterator):
     def __init__(self,controller):
-        self.name,self.version="rattlekekz","0.1 Nullpointer Exception"  # Diese Variablen werden vom View abgefragt
+        self.name,self.version="rattlekekz-qt","0.1 Nullpointer Exception"  # Diese Variablen werden vom View abgefragt
         self.controller=controller
         self.revision=rev
         self.alert=app.alert
@@ -286,7 +286,7 @@ class View(TabManager,iterator):
         self.status.showMessage("connecting ...")
 
     def connectionLost(self,reason):
-        self.status.showMessage(self.stringHandler("connection lost, reason:"+reason,True))
+        self.status.showMessage(self.stringHandler("connection lost",True))
 
     def connectionFailed(self):
         self.status.showMessage("connection attempt failed")
