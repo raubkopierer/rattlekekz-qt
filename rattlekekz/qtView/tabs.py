@@ -97,6 +97,7 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
     def sendLogin(self):
         nick,password,rooms=self.parent.stringHandler([self.nickInput.text(),self.passInput.text(),self.roomInput.text()])
         if self.prelogin:
+            self.prelogin=False
             self.parent.sendLogin(nick,password,rooms)
 
     def selectRooms(self):
@@ -114,6 +115,12 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
             self.focusNextChild()
         else:
             self.sendLogin()
+
+    def grayOut(self,gray=True):
+        if gray:
+            map(lambda x: x.setDisabled(True),[self.loginButton,self.nickInput,self.passInput,self.roomInput,self.roomList,self.registerButton])
+        else:
+            map(lambda x: x.setEnabled(True),[self.loginButton,self.nickInput,self.passInput,self.roomInput,self.roomList,self.registerButton])
 
 class rattlekekzRegTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):

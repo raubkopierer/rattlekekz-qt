@@ -271,6 +271,7 @@ class View(TabManager,iterator):
         self.getTab(room).newTopic(topic)
 
     def sendLogin(self, nick, passwd, room):
+        self.getTab("$login").grayOut()
         self.iterPlugins('sendLogin', [nick, passwd, room])
 
     def registerNick(self, nick, passwd, email):
@@ -325,6 +326,8 @@ class View(TabManager,iterator):
         self.status.showMessage(message)
 
     def gotLoginException(self,message):
+        self.getTab("$login").grayOut(False)
+        self.getTab("$login").prelogin=True
         self.status.showMessage(message)
 
     def listUser(self,room,users):
