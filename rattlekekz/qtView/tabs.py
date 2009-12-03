@@ -159,15 +159,17 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.Box0.addWidget(rattlekekzOutputWidget())
         Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         Box2.addWidget(rattlekekzEditWidget())
-        Box2.addWidget(QtGui.QPushButton("&Send"))
+        #Box2.addWidget(QtGui.QPushButton("&Send"))
         self.Box0.addLayout(Box2)
         self.output=self.Box0.itemAt(0).widget() # QTextBrowser
         self.output.addSmilies(self.parent.smilie_data)
-        #document=QtGui.QTextDocument(self)
-        self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
+        # document=QtGui.QTextDocument(self)
+        # this button really isn't nessecary at all.
+	self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.defaultWidget=self.input
-        self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
-        self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
+        #self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
+        # dude, just keep a reference on the button if you want to modify it later!
+	# self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
@@ -190,8 +192,9 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.Box0.itemAt(1).widget().addWidget(QtGui.QListWidget())
         Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         Box1.addWidget(rattlekekzEditWidget())
-        Box1.addWidget(QtGui.QPushButton("&Send"))
-        self.Box0.addLayout(Box1)
+        #Box1.addWidget(QtGui.QPushButton("&Send"))
+        # this button really isn't nessecary at all. trust me.
+	self.Box0.addLayout(Box1)
         self.userList = self.Box0.itemAt(1).widget().widget(1)
         #self.userView.setEditTriggers(self.userView.NoEditTriggers)
         #self.userView.setSelectionMode(self.roomView.NoSelection)
@@ -202,8 +205,9 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.output.addSmilies(self.parent.smilie_data)
         self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.defaultWidget=self.input
-        self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
-        self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
+        #self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
+        # seriously? why don't you just keep the reference in the first place?
+	#self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.topicLine,QtCore.SIGNAL("returnPressed()"),self.setTopic)
