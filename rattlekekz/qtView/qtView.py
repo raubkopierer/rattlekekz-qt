@@ -41,7 +41,10 @@ from rattlekekz.qtView.widgets import *
 from rattlekekz.qtView.tabmanagement import TabManager
 
 rev=search("\d+",revision).group()
-
+# flachzange, als ich dir objektorientierte programmierung erklärt habe meinte ich damit nicht du solltest alles
+# was dir aus dem hirn trieft in eine grosse klasse laufen lassen, für sowas gibt es taschentücher.
+# aus dem kram hier muss man min 2-3 klassen machen, ich würd mal damit anfangen den parser in eine kekzparser
+# klasse zu refaktoren. und hab bitte den anstand dann für jede klasse auch ne eigene datei zu machen.
 class View(TabManager,iterator):
     def __init__(self,controller):
         self.name,self.version="rattlekekz-qt","0.1 Nullpointer Exception"  # Diese Variablen werden vom View abgefragt
