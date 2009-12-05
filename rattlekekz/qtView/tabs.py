@@ -165,11 +165,12 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.output.addSmilies(self.parent.smilie_data)
         # document=QtGui.QTextDocument(self)
         # this button really isn't nessecary at all.
-	self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
+        self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
         self.defaultWidget=self.input
         #self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
         # dude, just keep a reference on the button if you want to modify it later!
-	# self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
+        # this isn't possible because addWidget doesn't return the button
+        # self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
@@ -194,7 +195,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         Box1.addWidget(rattlekekzEditWidget())
         #Box1.addWidget(QtGui.QPushButton("&Send"))
         # this button really isn't nessecary at all. trust me.
-	self.Box0.addLayout(Box1)
+        self.Box0.addLayout(Box1)
         self.userList = self.Box0.itemAt(1).widget().widget(1)
         #self.userView.setEditTriggers(self.userView.NoEditTriggers)
         #self.userView.setSelectionMode(self.roomView.NoSelection)
@@ -207,7 +208,8 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.defaultWidget=self.input
         #self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
         # seriously? why don't you just keep the reference in the first place?
-	#self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
+        # you just said the button isn't needed anyway :D
+        #self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.topicLine,QtCore.SIGNAL("returnPressed()"),self.setTopic)
