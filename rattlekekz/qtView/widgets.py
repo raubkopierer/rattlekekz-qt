@@ -3,9 +3,9 @@
 
 from PyQt4 import QtCore,QtGui
 
-class rattlekekzEditWidget(QtGui.QLineEdit):
+class rattlekekzEditWidget(QtGui.QTextEdit):
     def __init__(self,text="",parent=None):
-        QtGui.QLineEdit.__init__(self,text,parent)
+        QtGui.QTextEdit.__init__(self,text,parent)
         self.history=[]
         self.historyIndex=-1
         self.current=None
@@ -13,7 +13,7 @@ class rattlekekzEditWidget(QtGui.QLineEdit):
     def event(self,event):
         taken=False
         if event.type() != QtCore.QEvent.KeyPress:
-            if QtGui.QLineEdit.event(self,event):
+            if QtGui.QTextEdit.event(self,event):
                 taken=True
         elif event.key() != QtCore.Qt.Key_Tab:
             if event.key() != QtCore.Qt.Key_Backtab:
@@ -28,7 +28,7 @@ class rattlekekzEditWidget(QtGui.QLineEdit):
             self.emit(QtCore.SIGNAL("tabPressed()"))
             taken=True
         else:
-            if QtGui.QLineEdit.event(self,event):
+            if QtGui.QTextEdit.event(self,event):
                 taken=True
         return taken
 
@@ -44,14 +44,14 @@ class rattlekekzEditWidget(QtGui.QLineEdit):
             taken=True
             self.scrollDown()
         else:
-            if QtGui.QLineEdit.keyPressEvent(self,event):
+            if QtGui.QTextEdit.keyPressEvent(self,event):
                 taken=True
         return taken
 
     def returnPressed(self):
         if self.historyIndex>0:
             self.history.pop(self.historyIndex)
-        self.history.insert(0,self.text())
+        self.history.insert(0,self.toHtml())
         self.historyIndex=-1
         self.current=None
         self.emit(QtCore.SIGNAL("returnPressed()"))
@@ -59,19 +59,24 @@ class rattlekekzEditWidget(QtGui.QLineEdit):
     def scrollUp(self):
         if self.historyIndex+1<len(self.history):
             if self.historyIndex==-1:
-                self.current=(self.text(),self.cursorPosition())
+                self.current=(self.toHtml(),self.textCursor().position())
             self.historyIndex+=1
             self.setText(self.history[self.historyIndex])
-            self.setCursorPosition(self.history[self.historyIndex])
+            cursor=self.textCursor()
+            cursor.movePosition(QtGui.QTextCursor.End)
+            self.setTextCursor(cursor)
 
     def scrollDown(self):
+        cursor=self.textCursor()
         if self.historyIndex>0:
             self.historyIndex-=1
             self.setText(self.history[self.historyIndex])
-            self.setCursorPosition(len(self.history[self.historyIndex]))
+            cursor.movePosition(QtGui.QTextCursor.End)
+            self.setTextCursor(cursor)
         elif self.current!=None:
             self.setText(self.current[0])
-            self.setCursorPosition(self.current[1])
+            cursor.setPosition(self.current[1])
+            self.setTextCursor(cursor)
             self.current=None
             self.historyIndex=-1
 

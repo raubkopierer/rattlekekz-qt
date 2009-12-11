@@ -22,7 +22,7 @@ copyright = """
 
 from PyQt4 import QtCore,QtGui
 from rattlekekz.qtView.widgets import *
-import webbrowser
+import webbrowser,re
 
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
@@ -157,28 +157,18 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
         self.Box0.addWidget(rattlekekzOutputWidget())
-        Box2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
-        Box2.addWidget(rattlekekzEditWidget())
-        #Box2.addWidget(QtGui.QPushButton("&Send"))
-        self.Box0.addLayout(Box2)
+        self.Box0.addWidget(rattlekekzEditWidget())
         self.output=self.Box0.itemAt(0).widget() # QTextBrowser
         self.output.addSmilies(self.parent.smilie_data)
-        # document=QtGui.QTextDocument(self)
-        # this button really isn't nessecary at all.
-        self.input=self.Box0.itemAt(1).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
+        self.input=self.Box0.itemAt(1).widget() # QTextEdit
         self.defaultWidget=self.input
-        #self.send=self.Box0.itemAt(1).layout().itemAt(1).widget() # QPushButton
-        # dude, just keep a reference on the button if you want to modify it later!
-        # this isn't possible because addWidget doesn't return the button
-        # self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
     def sendStr(self):
-        if self.input.hasAcceptableInput():
-            input = "~n~".join(self.parent.stringHandler(self.input.text()).split("\n"))
-            self.parent.sendStr(self.parent.stringHandler(self.room),input)
-            self.input.setText("")
+        input = "~n~".join(self.parent.stringHandler(self.input.toPlainText()).split("\n"))
+        self.parent.sendStr(self.parent.stringHandler(self.room),input)
+        self.input.setText("")
 
     def addLine(self,msg):
         self.output.append(self.parent.stringHandler(msg,True))
@@ -191,25 +181,16 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
         self.Box0.itemAt(1).widget().addWidget(rattlekekzOutputWidget())
         self.Box0.itemAt(1).widget().addWidget(QtGui.QListWidget())
-        Box1 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
-        Box1.addWidget(rattlekekzEditWidget())
-        #Box1.addWidget(QtGui.QPushButton("&Send"))
-        # this button really isn't nessecary at all. trust me.
-        self.Box0.addLayout(Box1)
+        self.Box0.addWidget(rattlekekzEditWidget())
+        self.Box0.itemAt(1).widget().setSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         self.userList = self.Box0.itemAt(1).widget().widget(1)
-        #self.userView.setEditTriggers(self.userView.NoEditTriggers)
-        #self.userView.setSelectionMode(self.roomView.NoSelection)
-        #self.userView.setDragDropMode(self.userView.NoDragDrop)
         self.userList.setFixedWidth(140)
         self.topicLine=self.Box0.itemAt(0).widget() # QLineEdit
         self.output=self.Box0.itemAt(1).widget().widget(0) # QTextBrowser
         self.output.addSmilies(self.parent.smilie_data)
-        self.input=self.Box0.itemAt(2).layout().itemAt(0).widget() # QLineEdit TODO: May replace with QTextEdit
+        self.input=self.Box0.itemAt(2).widget() # QTextEdit
+        self.input.setFixedHeight(QtGui.QFontInfo(self.input.currentFont()).pixelSize()*6)
         self.defaultWidget=self.input
-        #self.send=self.Box0.itemAt(2).layout().itemAt(1).widget() # QPushButton
-        # seriously? why don't you just keep the reference in the first place?
-        # you just said the button isn't needed anyway :D
-        #self.connect(self.send,QtCore.SIGNAL("clicked()"),self.input.returnPressed)
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.topicLine,QtCore.SIGNAL("returnPressed()"),self.setTopic)
@@ -274,10 +255,14 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
 
     def complete(self):
         at=False
-        input = self.parent.stringHandler(self.input.text(),True)
-        input,crap=input[:self.input.cursorPosition()].split(),input[self.input.cursorPosition():]
-        if len(input) is not 0:
-            nick = input.pop().lower()
+        cursor=self.input.textCursor()
+        input = self.parent.stringHandler(self.input.toPlainText(),True)
+        input,crap=input[:cursor.position()],input[cursor.position():]
+        input=re.match(r"((?:\n|.)*?)(\s?)(\S+?$)",input)
+        if input:
+            sep = input.group(2)
+            nick = input.group(3).lower()
+            input = [input.group(1)]
             if nick.startswith("@"):
                 nick = nick[1:]
                 at=True
@@ -297,18 +282,20 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                     if at:
                         newInput=u"@"+newInput
                     input.append(newInput)
-                    self.input.setText(self.parent.stringHandler(u" ".join(input)+crap,True))
-                    self.input.setCursorPosition(len(self.input.text())-len(crap))
+                    self.input.setText(self.parent.stringHandler(sep.join(input)+crap,True))
+                    cursor.setPosition(len(self.input.toPlainText())-len(crap))
+                    self.input.setTextCursor(cursor)
                     self.addLine(u" ".join(solutions))
                 elif len(solutions) is not 0:
                     if at:
                         solutions[0]=u"@"+solutions[0]
-                    input.append(str(solutions[0]))
+                    input.append(solutions[0])
                     if len(input) is not 1:
-                        self.input.setText(u" ".join(input)+u" "+crap)
+                        self.input.setText(sep.join(input)+u" "+crap)
                     else:
-                        self.input.setText(u" ".join(input)+u", "+crap)
-                    self.input.setCursorPosition(len(self.input.text())-len(crap))
+                        self.input.setText(sep.join(input)+u", "+crap)
+                    cursor.setPosition(len(self.input.toPlainText())-len(crap))
+                    self.input.setTextCursor(cursor)
 
     def setTopic(self):
         if self.input.hasAcceptableInput():
