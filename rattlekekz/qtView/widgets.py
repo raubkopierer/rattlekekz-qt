@@ -15,22 +15,20 @@ class rattlekekzEditWidget(QtGui.QTextEdit):
         if event.type() != QtCore.QEvent.KeyPress:
             if QtGui.QTextEdit.event(self,event):
                 taken=True
-        elif event.key() != QtCore.Qt.Key_Tab:
-            if event.key() != QtCore.Qt.Key_Backtab:
+        elif event.modifiers() in (QtCore.Qt.ControlModifier,QtCore.Qt.ControlModifier|QtCore.Qt.ShiftModifier):
+            if QtCore.Qt.Key_Backtab != event.key() != QtCore.Qt.Key_Tab:
                 if self.keyPressEvent(event):
                     taken=True
-            elif not event.modifiert().__eq__(QtCore.Qt.NoModifier):
-                if self.keyPressEvent(event):
-                    taken=True
-            else:
-                taken=True
-        elif event.modifiers().__eq__(QtCore.Qt.NoModifier):
+        elif event.key() == QtCore.Qt.Key_Tab:
             self.emit(QtCore.SIGNAL("tabPressed()"))
             taken=True
+        elif event.key() == QtCore.Qt.Key_Backtab:
+            taken=True
         else:
-            if QtGui.QTextEdit.event(self,event):
+            if self.keyPressEvent(event):
                 taken=True
         return taken
+        event.modifiers()
 
     def keyPressEvent(self,event):
         taken=False
