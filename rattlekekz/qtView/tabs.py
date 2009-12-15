@@ -378,6 +378,7 @@ class rattlekekzMailEditTab(rattlekekzBaseTab):
         Box.addWidget(QtGui.QPushButton("&Send"))
         self.receiver=Box.itemAt(0).layout().itemAt(1).widget()
         self.input=Box.itemAt(1).widget()
+        self.input.setAcceptRichText(False)
         self.send=Box.itemAt(2).widget()
         self.defaultWidget=self.receiver
         self.connect(self.send,QtCore.SIGNAL("clicked()"),self.sendMail)

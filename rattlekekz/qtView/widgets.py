@@ -9,6 +9,7 @@ class rattlekekzEditWidget(QtGui.QTextEdit):
         self.history=[]
         self.historyIndex=-1
         self.current=None
+        self.setAcceptRichText(False)
 
     def event(self,event):
         taken=False
