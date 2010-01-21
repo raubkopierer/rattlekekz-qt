@@ -229,7 +229,7 @@ class View(TabManager,iterator):
                     try:
                         i=unicode(i)
                     except UnicodeDecodeError:
-                        i=str(i).decode("utf_8")
+                        i=str(i).decode("utf_8","replace")
                     result.append(i)
             return result
         else:
@@ -244,7 +244,7 @@ class View(TabManager,iterator):
                     return unicode(string)
                 except UnicodeDecodeError:
                     string=str(string)
-                    return string.decode("utf_8")
+                    return string.decode("utf_8","replace")
 
     def finishedReadingConfigfile(self):
         pass
