@@ -148,8 +148,8 @@ class View(TabManager,iterator):
                 continue
             if format[i] == "imageurl":
                 try:
-                    image=urllib.urlretrieve(text[i])[0]
-                    msg.append("<img src='"+self.stringHandler(image)+"'>")
+                    imageID=self.controller.loadImage(text[i])
+                    msg.append("<img src='image://"+str(imageID)+"' />")
                 except:
                     msg.append(self.escapeText("<image url is invalid>"))
                 #image=urllib2.urlopen(text[i]).read()
@@ -212,8 +212,8 @@ class View(TabManager,iterator):
                 break
         return "".join(text)
 
-    def fetchImage(self,url):
-        getPage(url).addCallbacks(callback=lambda image:image)
+    def loadedImage(self,id):
+        pass
 
     def stringHandler(self,string,return_utf8=False):
         if type(string) is list:
