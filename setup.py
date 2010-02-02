@@ -13,5 +13,5 @@ setup(name='rattlekekz-qt',
       requires=['PyQt4','rattlekekz'],
       url="http://kekz.net/",
       license="GPL v3 or higher",
-      data_files=[('share/emoticons/rattlekekz',["rattlekekz/emoticons/loading.png"])]
+      #data_files=[("share/emoticons/rattlekekz",glob.glob("share/emoticons/*.png"))]
      )
