@@ -46,7 +46,7 @@ rev=search("\d+",revision).group()
 # aus dem kram hier muss man min 2-3 klassen machen, ich würd mal damit anfangen den parser in eine kekzparser
 # klasse zu refaktoren. und hab bitte den anstand dann für jede klasse auch ne eigene datei zu machen.
 class View(TabManager,iterator):
-    def __init__(self,controller):
+    def __init__(self,controller, kekz=False):
         self.name,self.version="rattlekekz-qt","0.1 Nullpointer Exception"  # Diese Variablen werden vom View abgefragt
         self.controller=controller
         self.revision=rev
@@ -60,7 +60,7 @@ class View(TabManager,iterator):
         self.addTab("$login",rattlekekzLoginTab)
         self.changeTab("$login")
         self.main.show()
-        self.smilie_data=self.readSmilies()
+        self.smilie_data=self.readSmilies(kekz)
         self.smilies={"s6":":-)",
                  "s4":":-(",
                  "s1":":-/",
@@ -109,10 +109,14 @@ class View(TabManager,iterator):
         self.main.connect(self.menu,QtCore.SIGNAL("config()"),self.openConfig)
         self.main.connect(self.tabs,QtCore.SIGNAL("currentChanged(int)"),self.activateTab)
 
-    def readSmilies(self):
+    def readSmilies(self,kekz=False):
         data=[]
-        for i in glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'*.png'):
-            data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
+        if not kekz:
+            for i in glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'*.png'):
+                data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
+        else:
+            for i in glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'kekz'+os.sep+'*.png'):
+                data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
         return data
 
     def activateTab(self,integer):
