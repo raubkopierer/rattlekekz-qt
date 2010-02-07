@@ -61,6 +61,10 @@ class View(TabManager,iterator):
         self.changeTab("$login")
         self.main.show()
         self.smilie_data=self.readSmilies(kekz)
+        self.loading_data=open(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'loading.png').read()
+        self.loading_image=QtGui.QImage()
+        self.loading_image.loadFromData(self.loading_data,"PNG")
+        self.images={}
         self.smilies={"s6":":-)",
                  "s4":":-(",
                  "s1":":-/",
@@ -151,11 +155,13 @@ class View(TabManager,iterator):
                 msg.append("<hr>")
                 continue
             if format[i] == "imageurl":
-                try:
-                    image=urllib.urlretrieve(text[i])[0]
-                    msg.append("<img src='"+self.stringHandler(image)+"'>")
-                except:
-                    msg.append(self.escapeText("<image url is invalid>"))
+                image=self.controller.loadImage(text[i])
+                msg.append("<img src='image://"+str(image)+".jpg'>")
+                #try:
+                #    image=urllib.urlretrieve(text[i])[0]
+                #    msg.append("<img src='"+self.stringHandler(image)+"'>")
+                #except:
+                #    msg.append(self.escapeText("<image url is invalid>"))
                 #image=urllib2.urlopen(text[i]).read()
                 #for y in range(self.tabs.count()):
                 #    if isinstance(self.tabs.widget(y),rattlekekzPrivTab):
@@ -216,8 +222,11 @@ class View(TabManager,iterator):
                 break
         return "".join(text)
 
-    def fetchImage(self,url):
-        getPage(url).addCallbacks(callback=lambda image:image)
+    def loadedImage(self,id,image_data):
+        id=str(id)
+        image=QtGui.QImage()
+        image.loadFromData(image_data)
+        self.getTab(self.images[id]).refreshImage(id,image)
 
     def stringHandler(self,string,return_utf8=False):
         if type(string) is list:
@@ -327,7 +336,14 @@ class View(TabManager,iterator):
 
     def printMsg(self,room,msg):
         #print "<%s> %s" % (self.stringHandler(room),"".join(self.stringHandler(msg)))
-        self.getTab(room).addLine("".join(msg))
+        msg = "".join(msg)
+        ids=re.findall(r"<img\s+src='image://(\d+)\.jpg'\s*>",msg)
+        if len(ids) != 0:
+            if isinstance(self.getTab(room),(rattlekekzPrivTab,rattlekekzInfoTab,rattlekekzMailTab)):
+                for i in ids:
+                    self.images[i]=room
+                self.getTab(room).addImages(ids,self.loading_image)
+        self.getTab(room).addLine(msg)
 
     def gotException(self, message):
         self.status.showMessage(message)
