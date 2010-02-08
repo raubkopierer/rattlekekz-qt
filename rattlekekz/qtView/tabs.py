@@ -180,21 +180,15 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
     def refreshImage(self,id,qimage):
         self.output.document().addResource(self.output.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
         v=self.output.verticalScrollBar().value()
-        vmin=self.output.verticalScrollBar().minimum()
         vmax=self.output.verticalScrollBar().maximum()
         h=self.output.horizontalScrollBar().value()
-        hmin=self.output.horizontalScrollBar().minimum()
-        hmax=self.output.horizontalScrollBar().maximum()
         self.output.reload()
         self.output.document().adjustSize()
-        if vmin==vmax:
+        if v==vmax:
             self.output.verticalScrollBar().triggerAction(self.output.verticalScrollBar().SliderToMaximum)
         else:
             self.output.verticalScrollBar().setValue(v)
-        if hmin==hmax:
-            self.output.horizontalScrollBar().triggerAction(self.output.horizontalScrollBar().SliderToMinimum)
-        else:
-            self.output.horizontalScrollBar().setValue(h)
+        self.output.horizontalScrollBar().setValue(h)
 
 class rattlekekzMsgTab(rattlekekzPrivTab):
     def __init__(self,parent=None,caller=None,room=None):
@@ -423,23 +417,7 @@ class rattlekekzMailEditTab(rattlekekzBaseTab):
             self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+i+".jpg"),qimage)
 
     def refreshImage(self,id,qimage):
-        self.output.document().addResource(self.output.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
-        v=self.output.verticalScrollBar().value()
-        vmin=self.output.verticalScrollBar().minimum()
-        vmax=self.output.verticalScrollBar().maximum()
-        h=self.output.horizontalScrollBar().value()
-        hmin=self.output.horizontalScrollBar().minimum()
-        hmax=self.output.horizontalScrollBar().maximum()
-        self.output.reload()
-        self.output.document().adjustSize()
-        if vmin==vmax:
-            self.output.verticalScrollBar().triggerAction(self.output.verticalScrollBar().SliderToMaximum)
-        else:
-            self.output.verticalScrollBar().setValue(v)
-        if hmin==hmax:
-            self.output.horizontalScrollBar().triggerAction(self.output.horizontalScrollBar().SliderToMinimum)
-        else:
-            self.output.horizontalScrollBar().setValue(h)
+        rattlekekzPrivTab.refreshImage(self,id,qimage)
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
@@ -462,23 +440,7 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
             self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+i+".jpg"),qimage)
 
     def refreshImage(self,id,qimage):
-        self.output.document().addResource(self.output.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
-        v=self.output.verticalScrollBar().value()
-        vmin=self.output.verticalScrollBar().minimum()
-        vmax=self.output.verticalScrollBar().maximum()
-        h=self.output.horizontalScrollBar().value()
-        hmin=self.output.horizontalScrollBar().minimum()
-        hmax=self.output.horizontalScrollBar().maximum()
-        self.output.reload()
-        self.output.document().adjustSize()
-        if vmin==vmax:
-            self.output.verticalScrollBar().triggerAction(self.output.verticalScrollBar().SliderToMaximum)
-        else:
-            self.output.verticalScrollBar().setValue(v)
-        if hmin==hmax:
-            self.output.horizontalScrollBar().triggerAction(self.output.horizontalScrollBar().SliderToMinimum)
-        else:
-            self.output.horizontalScrollBar().setValue(h)
+        rattlekekzPrivTab.refreshImage(self,id,qimage)
 
     def addLine(self,msg):
         self.output.append(self.parent.stringHandler(msg,True))
