@@ -135,6 +135,14 @@ class View(TabManager,iterator):
             self.tabs.removeTab(integer)
             del self.lookupRooms[0]
 
+    def getRooms(self):
+        rooms=[]
+        for i in range(self.tabs.count()):
+            room = self.stringHandler(self.tabs.tabText(i))
+            if not room.startswith("#"):
+                rooms.append(room)
+        return rooms
+
     def quit(self):
         self.iterPlugins('quitConnection')
         reactor.stop()
@@ -269,8 +277,7 @@ class View(TabManager,iterator):
         self.getTab("$login").receivedPreLoginData(rooms,array)
 
     def startConnection(self,host,port):
-        reactor.connectSSL(host, port, self.controller.model, self.controller.model)
-        reactor.run()
+        self.controller.startConnection(host,port)
 
     def addRoom(self,room,tab):
         tablist={"ChatRoom":rattlekekzMsgTab,
@@ -313,7 +320,10 @@ class View(TabManager,iterator):
         self.ShownRoom=room
         self.addTab(room,rattlekekzMsgTab)
         self.changeTab(room)
-        self.delTab("$login")
+        try:
+            self.delTab("$login")
+        except:
+            pass
 
     def successRegister(self):
         self.status.showMessage("nick registered")
