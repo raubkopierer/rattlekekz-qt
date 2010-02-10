@@ -65,6 +65,7 @@ class View(TabManager,iterator):
         self.loading_image=QtGui.QImage()
         self.loading_image.loadFromData(self.loading_data,"PNG")
         self.images={}
+        self.pendingImages=[]
         self.smilies={"s6":":-)",
                  "s4":":-(",
                  "s1":":-/",
@@ -164,7 +165,9 @@ class View(TabManager,iterator):
                 continue
             if format[i] == "imageurl":
                 image=self.controller.loadImage(text[i])
-                msg.append("<img src='image://"+str(image)+".jpg'>")
+                if image[0] == "image":
+                    self.pendingImages.append(str(image[1]))
+                msg.append("<img src='image://"+str(image[1])+".jpg'>")
                 #try:
                 #    image=urllib.urlretrieve(text[i])[0]
                 #    msg.append("<img src='"+self.stringHandler(image)+"'>")
@@ -352,7 +355,13 @@ class View(TabManager,iterator):
             if isinstance(self.getTab(room),(rattlekekzPrivTab,rattlekekzInfoTab,rattlekekzMailTab)):
                 for i in ids:
                     self.images[i]=room
-                self.getTab(room).addImages(ids,self.loading_image)
+                    if i in self.pendingImages:
+                        image=QtGui.QImage()
+                        image.loadFromData(self.controller.getImage(int(i)))
+                        self.getTab(room).addImage(i,image)
+                        self.pendingImages.remove(i)
+                    else:
+                        self.getTab(room).addImage(i,self.loading_image)
         self.getTab(room).addLine(msg)
 
     def gotException(self, message):

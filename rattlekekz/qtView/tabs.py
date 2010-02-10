@@ -173,7 +173,7 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
     def addLine(self,msg):
         self.output.append(self.parent.stringHandler(msg,True))
 
-    def addImages(self,id_list,qimage):
+    def addImage(self,id_list,qimage):
         for i in id_list:
             self.output.document().addResource(self.output.document().ImageResource,QtCore.QUrl("image://"+i+".jpg"),qimage)
 
@@ -412,7 +412,7 @@ class rattlekekzMailEditTab(rattlekekzBaseTab):
         input=input.replace("\n","~n~")
         self.parent.sendMail(receiver,input)
 
-    def addImages(self,id_list,qimage):
+    def addImage(self,id_list,qimage):
         for i in id_list:
             self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+i+".jpg"),qimage)
 
@@ -435,9 +435,8 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
         for i in whois:
             self.addLine(i)
 
-    def addImages(self,id_list,qimage):
-        for i in id_list:
-            self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+i+".jpg"),qimage)
+    def addImage(self,id,qimage):
+        self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
 
     def refreshImage(self,id,qimage):
         rattlekekzPrivTab.refreshImage(self,id,qimage)
