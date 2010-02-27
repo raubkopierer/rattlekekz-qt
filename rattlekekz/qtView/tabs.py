@@ -315,7 +315,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
                     self.input.setTextCursor(cursor)
 
     def setTopic(self):
-        if self.input.hasAcceptableInput():
+        if self.topicLine.hasAcceptableInput():
             input = self.parent.stringHandler(self.topicLine.text())
             self.parent.sendStr(self.parent.stringHandler(self.room),"/topic "+input)
 
