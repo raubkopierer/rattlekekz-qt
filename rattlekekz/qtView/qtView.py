@@ -368,9 +368,14 @@ class View(TabManager,iterator):
         self.status.showMessage(message)
 
     def gotLoginException(self,message):
-        self.getTab("$login").grayOut(False)
-        self.getTab("$login").prelogin=True
-        self.getTab("$login").gotFocus()
+        try:
+            tab = self.getTab("$login")
+        except:
+            pass
+        else:
+            tab.grayOut(False)
+            tab.prelogin=True
+            tab.gotFocus()
         self.status.showMessage(message)
 
     def listUser(self,room,users):
