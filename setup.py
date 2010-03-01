@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from distutils.core import setup
-#import glob
+import glob
 
 setup(name='rattlekekz-qt',
       version='0.1',
