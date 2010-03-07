@@ -185,9 +185,8 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.output.reload()
         self.output.document().adjustSize()
         if v==vmax:
-            self.output.verticalScrollBar().triggerAction(self.output.verticalScrollBar().SliderToMaximum)
-        else:
-            self.output.verticalScrollBar().setValue(v)
+            v=self.output.verticalScrollBar().maximum()
+        self.output.verticalScrollBar().setValue(v)
         self.output.horizontalScrollBar().setValue(h)
 
 class rattlekekzMsgTab(rattlekekzPrivTab):
