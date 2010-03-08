@@ -133,6 +133,10 @@ class View(TabManager,iterator):
         if isinstance(self.tabs.widget(integer),rattlekekzMsgTab):
             self.sendStr(self.stringHandler(self.tabs.tabText(integer)),"/part")
         else:
+            if isinstance(self.tabs.widget(integer),rattlekekzInfoTab):
+                text = self.stringHandler(self.tabs.tabText(integer))
+                if text.startswith("whois"):
+                    self.controller.closedWhois(text.split(" ")[1])
             self.tabs.removeTab(integer)
             del self.lookupRooms[0]
 
@@ -432,10 +436,15 @@ class View(TabManager,iterator):
 
     def receivedWhois(self,nick,array):
         title=u"whois: "+self.stringHandler(nick,True)
-        self.addRoom(title,"WhoisRoom")
-        self.changeTab(title)
         out = map(lambda x:"".join(self.deparse(x)), array)
-        self.getTab(title).addWhois(out)
+        try:
+            tab = self.getTab(title)
+        except:
+            self.addRoom(title,"WhoisRoom")
+            self.changeTab(title)
+            self.getTab(title).addWhois(out)
+        else:
+            tab.addWhois(out)
 
     def MailInfo(self,info):
         pass
