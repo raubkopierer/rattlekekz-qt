@@ -183,7 +183,8 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         vmax=self.output.verticalScrollBar().maximum()
         h=self.output.horizontalScrollBar().value()
         self.output.reload()
-        self.output.document().adjustSize()
+        html = self.output.toHtml()
+        self.output.setHtml(html)
         if v==vmax:
             v=self.output.verticalScrollBar().maximum()
         self.output.verticalScrollBar().setValue(v)
