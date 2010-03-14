@@ -5,12 +5,12 @@ from distutils.core import setup
 import glob
 
 setup(name='rattlekekz-qt',
-      version='0.1',
+      version='20100314',
       author="Christian Scharkus",
       author_email="cscharkus[at]gmail[dot]com",
-      packages=['rattlekekz.qtView'],
+      packages=['rattlekekz.qtView','twisted.plugins'],
+      py_modules=['qt4reactor'],
       scripts=['bin/rattlekekz-qt'],
-      requires=['PyQt4','rattlekekz'],
       url="http://kekz.net/",
       license="GPL v3 or higher",
       data_files=[("share/emoticons/rattlekekz",glob.glob("rattlekekz/emoticons/*.png"))]
