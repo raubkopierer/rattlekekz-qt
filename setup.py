@@ -5,7 +5,7 @@ from distutils.core import setup
 import glob
 
 setup(name='rattlekekz-qt',
-      version='20100314',
+      version='20100315',
       author="Christian Scharkus",
       author_email="cscharkus[at]gmail[dot]com",
       packages=['rattlekekz.qtView','twisted.plugins'],

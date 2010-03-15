@@ -435,8 +435,9 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
         for i in whois:
             self.addLine(i)
 
-    def addImage(self,id,qimage):
-        self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
+    def addImage(self,id_list,qimage):
+        for id in id_list:
+            self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
 
     def refreshImage(self,id,qimage):
         rattlekekzPrivTab.refreshImage(self,id,qimage)
