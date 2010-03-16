@@ -241,7 +241,10 @@ class View(TabManager,iterator):
         id=str(id)
         image=QtGui.QImage()
         image.loadFromData(image_data)
-        self.getTab(self.images[id]).refreshImage(id,image)
+        if self.images.has_key(id):
+            self.getTab(self.images[id]).refreshImage(id,image)
+        else:
+            reactor.callLater(10,self.loadedImage,id,image_data)
 
     def stringHandler(self,string,return_utf8=False):
         if type(string) is list:
@@ -442,9 +445,9 @@ class View(TabManager,iterator):
         except:
             self.addRoom(title,"WhoisRoom")
             self.changeTab(title)
-            self.getTab(title).addWhois(out)
-        else:
-            tab.addWhois(out)
+        self.getTab(title).addWhois()
+        for msg in out:
+            self.printMsg(title,msg)
 
     def MailInfo(self,info):
         pass

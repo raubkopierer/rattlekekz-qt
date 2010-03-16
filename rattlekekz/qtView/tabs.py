@@ -417,7 +417,17 @@ class rattlekekzMailEditTab(rattlekekzBaseTab):
             self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+i+".jpg"),qimage)
 
     def refreshImage(self,id,qimage):
-        rattlekekzPrivTab.refreshImage(self,id,qimage)
+        self.output.document().addResource(self.output.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
+        v=self.output.verticalScrollBar().value()
+        vmax=self.output.verticalScrollBar().maximum()
+        h=self.output.horizontalScrollBar().value()
+        self.output.reload()
+        html = self.output.toHtml()
+        self.output.setHtml(html)
+        if v==vmax:
+            v=self.output.verticalScrollBar().maximum()
+        self.output.verticalScrollBar().setValue(v)
+        self.output.horizontalScrollBar().setValue(h)
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
@@ -430,17 +440,25 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
         self.output.setReadOnly(True)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
 
-    def addWhois(self,whois):
+    def addWhois(self):
         self.output.setHtml("")
-        for i in whois:
-            self.addLine(i)
 
     def addImage(self,id_list,qimage):
         for id in id_list:
-            self.output.document().addResource(self.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
+            self.output.document().addResource(self.output.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
 
     def refreshImage(self,id,qimage):
-        rattlekekzPrivTab.refreshImage(self,id,qimage)
+        self.output.document().addResource(self.output.document().ImageResource,QtCore.QUrl("image://"+id+".jpg"),qimage)
+        v=self.output.verticalScrollBar().value()
+        vmax=self.output.verticalScrollBar().maximum()
+        h=self.output.horizontalScrollBar().value()
+        self.output.reload()
+        html = self.output.toHtml()
+        self.output.setHtml(html)
+        if v==vmax:
+            v=self.output.verticalScrollBar().maximum()
+        self.output.verticalScrollBar().setValue(v)
+        self.output.horizontalScrollBar().setValue(h)
 
     def addLine(self,msg):
         self.output.append(self.parent.stringHandler(msg,True))
