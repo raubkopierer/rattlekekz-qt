@@ -88,6 +88,9 @@ class rattlekekzLoginTab(rattlekekzBaseTab):
     def receivedPreLoginData(self,rooms,array):
         self.loginButton.setEnabled(True)
         self.prelogin=True
+        self.updateRooms(rooms)
+
+    def updateRooms(self,rooms):
         list=[]
         for i in rooms:
             list.append(i["name"]+" ("+str(i["users"])+"/"+str(i["max"])+")")

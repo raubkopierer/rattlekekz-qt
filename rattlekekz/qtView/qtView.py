@@ -286,6 +286,14 @@ class View(TabManager,iterator):
         self.addTab("$login",rattlekekzLoginTab)
         self.getTab("$login").receivedPreLoginData(rooms,array)
 
+    def updateRooms(self,rooms):
+        try:
+            tab=self.getTab("$login")
+        except:
+            pass
+        else:
+            tab.updateRooms(rooms)
+
     def startConnection(self,host,port):
         self.controller.startConnection(host,port)
 
