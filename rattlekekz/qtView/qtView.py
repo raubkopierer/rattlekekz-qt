@@ -46,8 +46,8 @@ rev=search("\d+",revision).group()
 # aus dem kram hier muss man min 2-3 klassen machen, ich würd mal damit anfangen den parser in eine kekzparser
 # klasse zu refaktoren. und hab bitte den anstand dann für jede klasse auch ne eigene datei zu machen.
 class View(TabManager,iterator):
-    def __init__(self,controller, kekz=False):
-        self.name,self.version="rattlekekz-qt","0.1 Nullpointer Exception"  # Diese Variablen werden vom View abgefragt
+    def __init__(self,controller):
+        self.name,self.version="rattlekekz-qt",20100225  # Diese Variablen werden vom View abgefragt
         self.controller=controller
         self.revision=rev
         self.alert=app.alert
@@ -60,7 +60,7 @@ class View(TabManager,iterator):
         self.addTab("$login",rattlekekzLoginTab)
         self.changeTab("$login")
         self.main.show()
-        self.smilie_data=self.readSmilies(kekz)
+        self.smilie_data=self.readSmilies()
         self.loading_data=open(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'loading.png').read()
         self.loading_image=QtGui.QImage()
         self.loading_image.loadFromData(self.loading_data,"PNG")
@@ -114,14 +114,10 @@ class View(TabManager,iterator):
         self.main.connect(self.menu,QtCore.SIGNAL("config()"),self.openConfig)
         self.main.connect(self.tabs,QtCore.SIGNAL("currentChanged(int)"),self.activateTab)
 
-    def readSmilies(self,kekz=False):
+    def readSmilies(self):
         data=[]
-        if not kekz:
-            for i in glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'*.png'):
-                data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
-        else:
-            for i in glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'kekz'+os.sep+'*.png'):
-                data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
+        for i in glob(sys.prefix+os.sep+'share'+os.sep+'emoticons'+os.sep+'rattlekekz'+os.sep+'*.png'):
+            data.append((QtCore.QUrl("smilie://"+i.split(os.sep)[-1]),QtGui.QImage(i,"PNG")))
         return data
 
     def activateTab(self,integer):
@@ -493,7 +489,7 @@ class View(TabManager,iterator):
         self.openMailTab()
         header = u"Mail by "+user+" from "+date+u": °np° ---begin of mail ---- °np°" 
         end = u"°np°---end of mail---°np°"
-        mail = header + mail + end
+        mail = header + self.stringHandler(mail,True) + end
         msg = self.deparse(mail)
         self.getTab("$mails").addLine(msg)
 
