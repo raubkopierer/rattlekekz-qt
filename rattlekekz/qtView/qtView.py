@@ -147,7 +147,6 @@ class View(TabManager,iterator):
     def quit(self):
         self.iterPlugins('quitConnection')
         reactor.stop()
-        sys.exit()
 
     def openConfig(self):
         print "STUB: implement config tab"
