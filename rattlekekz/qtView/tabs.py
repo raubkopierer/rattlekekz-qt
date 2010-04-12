@@ -170,8 +170,9 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
 
     def sendStr(self):
         input = "~n~".join(self.parent.stringHandler(self.input.toPlainText()).split("\n"))
-        self.parent.sendStr(self.parent.stringHandler(self.room),input)
-        self.input.setText("")
+        if input != "":
+            self.parent.sendStr(self.parent.stringHandler(self.room),input)
+            self.input.setText("")
 
     def addLine(self,msg):
         self.output.append(self.parent.stringHandler(msg,True))
