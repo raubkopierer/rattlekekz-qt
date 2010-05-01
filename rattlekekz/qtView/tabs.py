@@ -164,6 +164,7 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.output=self.Box0.itemAt(0).widget() # QTextBrowser
         self.output.addSmilies(self.parent.smilie_data)
         self.input=self.Box0.itemAt(1).widget() # QTextEdit
+        self.input.setFixedHeight(QtGui.QFontInfo(self.input.currentFont()).pixelSize()*4)
         self.defaultWidget=self.input
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
         self.connect(self.output,QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.clickedURL)
@@ -210,7 +211,7 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
         self.output=self.Box0.itemAt(1).widget().widget(0) # QTextBrowser
         self.output.addSmilies(self.parent.smilie_data)
         self.input=self.Box0.itemAt(2).widget() # QTextEdit
-        self.input.setFixedHeight(QtGui.QFontInfo(self.input.currentFont()).pixelSize()*6)
+        self.input.setFixedHeight(QtGui.QFontInfo(self.input.currentFont()).pixelSize()*4)
         self.defaultWidget=self.input
         self.connect(self.input,QtCore.SIGNAL("tabPressed()"),self.complete)
         self.connect(self.input,QtCore.SIGNAL("returnPressed()"),self.sendStr)
