@@ -23,6 +23,7 @@ copyright = """
 from PyQt4 import QtCore,QtGui
 from rattlekekz.qtView.widgets import *
 import webbrowser,re
+from twisted.internet import reactor
 
 class rattlekekzBaseTab(QtGui.QWidget):
     def __init__(self,parent=None,caller=None,room=None):
@@ -187,13 +188,18 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         v=self.output.verticalScrollBar().value()
         vmax=self.output.verticalScrollBar().maximum()
         h=self.output.horizontalScrollBar().value()
+        hmax=self.output.horizontalScrollBar().value()
         self.output.reload()
         html = self.output.toHtml()
         self.output.setHtml(html)
-        if v==vmax:
-            v=self.output.verticalScrollBar().maximum()
-        self.output.verticalScrollBar().setValue(v)
-        self.output.horizontalScrollBar().setValue(h)
+        def setScrolls(vert,vertmax,hor,hormax):
+            if vert==vertmax:
+                vert=self.output.verticalScrollBar().maximum()
+            if hor==hormax and hor:
+                hor=self.output.horizontalScrollBar().maximum()
+            self.output.verticalScrollBar().setValue(vert)
+            self.output.horizontalScrollBar().setValue(hor)
+        reactor.callLater(0,setScrolls,v,vmax,h,hmax)
 
 class rattlekekzMsgTab(rattlekekzPrivTab):
     def __init__(self,parent=None,caller=None,room=None):
@@ -426,13 +432,18 @@ class rattlekekzMailEditTab(rattlekekzBaseTab):
         v=self.output.verticalScrollBar().value()
         vmax=self.output.verticalScrollBar().maximum()
         h=self.output.horizontalScrollBar().value()
+        hmax=self.output.horizontalScrollBar().value()
         self.output.reload()
         html = self.output.toHtml()
         self.output.setHtml(html)
-        if v==vmax:
-            v=self.output.verticalScrollBar().maximum()
-        self.output.verticalScrollBar().setValue(v)
-        self.output.horizontalScrollBar().setValue(h)
+        def setScrolls(vert,vertmax,hor,hormax):
+            if vert==vertmax:
+                vert=self.output.verticalScrollBar().maximum()
+            if hor==hormax and hor:
+                hor=self.output.horizontalScrollBar().maximum()
+            self.output.verticalScrollBar().setValue(vert)
+            self.output.horizontalScrollBar().setValue(hor)
+        reactor.callLater(0,setScrolls,v,vmax,h,hmax)
 
 class rattlekekzInfoTab(rattlekekzBaseTab):
     def __init__(self,parent=None,caller=None,room=None):
@@ -457,13 +468,18 @@ class rattlekekzInfoTab(rattlekekzBaseTab):
         v=self.output.verticalScrollBar().value()
         vmax=self.output.verticalScrollBar().maximum()
         h=self.output.horizontalScrollBar().value()
+        hmax=self.output.horizontalScrollBar().value()
         self.output.reload()
         html = self.output.toHtml()
         self.output.setHtml(html)
-        if v==vmax:
-            v=self.output.verticalScrollBar().maximum()
-        self.output.verticalScrollBar().setValue(v)
-        self.output.horizontalScrollBar().setValue(h)
+        def setScrolls(vert,vertmax,hor,hormax):
+            if vert==vertmax:
+                vert=self.output.verticalScrollBar().maximum()
+            if hor==hormax and hor:
+                hor=self.output.horizontalScrollBar().maximum()
+            self.output.verticalScrollBar().setValue(vert)
+            self.output.horizontalScrollBar().setValue(hor)
+        reactor.callLater(0,setScrolls,v,vmax,h,hmax)
 
     def addLine(self,msg):
         self.output.append(self.parent.stringHandler(msg,True))
