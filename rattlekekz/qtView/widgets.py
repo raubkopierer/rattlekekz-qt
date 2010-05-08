@@ -11,41 +11,39 @@ class rattlekekzEditWidget(QtGui.QTextEdit):
         self.current=None
         self.setAcceptRichText(False)
 
+    # event like event and keyPressEvent methods have to return True if they've taken the element and false if they didn't
     def event(self,event):
-        taken=False
         if event.type() != QtCore.QEvent.KeyPress:
             if QtGui.QTextEdit.event(self,event):
-                taken=True
+                return True
         elif event.modifiers() in (QtCore.Qt.ControlModifier,QtCore.Qt.ControlModifier|QtCore.Qt.ShiftModifier):
             if QtCore.Qt.Key_Backtab != event.key() != QtCore.Qt.Key_Tab:
                 if self.keyPressEvent(event):
-                    taken=True
+                    return True
         elif event.key() == QtCore.Qt.Key_Tab:
             self.emit(QtCore.SIGNAL("tabPressed()"))
-            taken=True
+            return True
         elif event.key() == QtCore.Qt.Key_Backtab:
-            taken=True
+            return True
         else:
             if self.keyPressEvent(event):
-                taken=True
-        return taken
-        event.modifiers()
+                return True
+        return False
 
     def keyPressEvent(self,event):
-        taken=False
         if event.matches(QtGui.QKeySequence.InsertParagraphSeparator):
-            taken=True
+            return True
             self.returnPressed()
         elif event.matches(QtGui.QKeySequence.MoveToPreviousLine):
-            taken=True
+            return True
             self.scrollUp()
         elif event.matches(QtGui.QKeySequence.MoveToNextLine):
-            taken=True
+            return True
             self.scrollDown()
         else:
             if QtGui.QTextEdit.keyPressEvent(self,event):
-                taken=True
-        return taken
+                return True
+        return False
 
     def returnPressed(self):
         if self.historyIndex>0:
