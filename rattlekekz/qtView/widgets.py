@@ -32,14 +32,14 @@ class rattlekekzEditWidget(QtGui.QTextEdit):
 
     def keyPressEvent(self,event):
         if event.matches(QtGui.QKeySequence.InsertParagraphSeparator):
-            return True
             self.returnPressed()
+            return True
         elif event.matches(QtGui.QKeySequence.MoveToPreviousLine):
-            return True
             self.scrollUp()
-        elif event.matches(QtGui.QKeySequence.MoveToNextLine):
             return True
+        elif event.matches(QtGui.QKeySequence.MoveToNextLine):
             self.scrollDown()
+            return True
         else:
             if QtGui.QTextEdit.keyPressEvent(self,event):
                 return True
