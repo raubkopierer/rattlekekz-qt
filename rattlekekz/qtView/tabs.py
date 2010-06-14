@@ -173,7 +173,10 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
     def sendStr(self):
         input = "~n~".join(self.parent.stringHandler(self.input.toPlainText()).split("\n"))
         if input != "":
-            self.parent.sendStr(self.parent.stringHandler(self.room),input)
+            if input.startswith("/clear"):
+                self.output.setHtml(u"")
+            else:
+                self.parent.sendStr(self.parent.stringHandler(self.room),input)
             self.input.setText("")
 
     def addLine(self,msg):
