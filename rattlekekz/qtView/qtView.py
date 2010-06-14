@@ -184,11 +184,11 @@ class View(TabManager,iterator):
                 continue
             if len(format[i]) > 1:
                 if format[i][0] == "ownnick":
-                    if not "green" in format[i][1]:
-                        color = "green"
+                    if not "red" in format[i][1]:
+                        color = "red"
                     else:
-                        color = "blue"
-                    msg.append("<font color='#"+self.colors[color]+"'>"+text[i]+"</font>")
+                        color = "green"
+                    msg.append("<font color='#"+self.colors[color]+"'><b>"+text[i]+"</b></font>")
                     continue
             #if text[i].isspace() or text[i]=="":   # NOTE: If there are any bugs with new rooms and the roomop-message THIS could be is the reason ;)
             #    continue                           # 
