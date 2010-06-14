@@ -107,7 +107,7 @@ class View(TabManager,iterator):
         self.tabs=self.main.centralWidget()
         self.tabs.setMovable(True)
         self.tabs.setTabsClosable(True)
-        self.tabs.setMinimumSize(400,550)
+        #self.tabs.setMinimumSize(400,550)
         self.main.connect(self.tabs,QtCore.SIGNAL("tabCloseRequested(int)"),self.closeTab)
         self.main.connect(self.main,QtCore.SIGNAL("closed()"),self.quit)
         self.main.connect(self.menu,QtCore.SIGNAL("quit()"),self.quit)
@@ -144,7 +144,7 @@ class View(TabManager,iterator):
         rooms=[]
         for i in range(self.tabs.count()):
             room = self.stringHandler(self.tabs.tabText(i))
-            if not room.startswith("#"):
+            if not room.startswith("#") and not room.startswith("whois: "):
                 rooms.append(room)
         return rooms
 

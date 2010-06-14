@@ -208,8 +208,10 @@ class rattlekekzMsgTab(rattlekekzPrivTab):
     def __init__(self,parent=None,caller=None,room=None):
         rattlekekzBaseTab.__init__(self,parent,caller,room)
         self.Box0 = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom,self)
+        self.Box0.setSpacing(0)
         self.Box0.addWidget(QtGui.QLineEdit())
         self.Box0.addWidget(QtGui.QSplitter(QtCore.Qt.Horizontal))
+        self.Box0.itemAt(1).widget().setHandleWidth(2)
         self.Box0.itemAt(1).widget().addWidget(rattlekekzOutputWidget())
         self.Box0.itemAt(1).widget().addWidget(QtGui.QListWidget())
         self.Box0.addWidget(rattlekekzEditWidget())
