@@ -81,6 +81,12 @@ class rattlekekzMainWidget(QtGui.QMainWindow):
     def closeEvent(self,event):
         self.emit(QtCore.SIGNAL("closed()"))
 
+    def changeEvent(self,event):
+        if event.type() == event.ActivationChange:
+            self.emit(QtCore.SIGNAL("gotFocus()"))
+        else:
+            QtGui.QMainWindow.changeEvent(self,event)
+
 class rattlekekzOutputWidget(QtGui.QTextBrowser):
     def __init__(self,parent=None):
         QtGui.QTextBrowser.__init__(self,parent)

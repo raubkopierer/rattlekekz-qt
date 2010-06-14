@@ -113,6 +113,7 @@ class View(TabManager,iterator):
         self.main.connect(self.menu,QtCore.SIGNAL("quit()"),self.quit)
         self.main.connect(self.menu,QtCore.SIGNAL("config()"),self.openConfig)
         self.main.connect(self.tabs,QtCore.SIGNAL("currentChanged(int)"),self.activateTab)
+        self.main.connect(self.main,QtCore.SIGNAL("gotFocus()"),self.changeFocus)
 
     def readSmilies(self):
         data=[]
@@ -135,6 +136,9 @@ class View(TabManager,iterator):
                     self.controller.closedWhois(text.split(" ")[1])
             self.tabs.removeTab(integer)
             del self.lookupRooms[0]
+
+    def changeFocus(self):
+        self.tabs.widget(self.getTabId(self.ShownRoom)).gotFocus()
 
     def getRooms(self):
         rooms=[]
