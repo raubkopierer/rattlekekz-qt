@@ -455,6 +455,7 @@ class View(TabManager,iterator):
         self.getTab(title).addWhois()
         for msg in out:
             self.printMsg(title,msg)
+        self.highlightTab(title,2)
 
     def MailInfo(self,info):
         pass
