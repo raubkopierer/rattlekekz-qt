@@ -33,6 +33,7 @@ import qt4reactor
 app = QtGui.QApplication(sys.argv)
 qt4reactor.install()
 from twisted.internet import reactor
+from twisted.internet.defer import DeferredSemaphore
 from twisted.web.client import getPage
 
 from rattlekekz.core.pluginmanager import iterator
@@ -47,7 +48,7 @@ rev=search("\d+",revision).group()
 # klasse zu refaktoren. und hab bitte den anstand dann für jede klasse auch ne eigene datei zu machen.
 class View(TabManager,iterator):
     def __init__(self,controller):
-        self.name,self.version="rattlekekz-qt",20100619  # Diese Variablen werden vom View abgefragt
+        self.name,self.version="rattlekekz-qt",20100620  # Diese Variablen werden vom View abgefragt
         self.controller=controller
         self.revision=rev
         self.alert=app.alert
@@ -95,6 +96,7 @@ class View(TabManager,iterator):
                      "blueaway":"5050E6",
                      "orangeaway":"E5B151",
                      "redaway":"E65151"}
+        self.imageLock = DeferredSemaphore(1)
 
     def _setup(self):
         self.main=rattlekekzMainWidget()
@@ -241,7 +243,8 @@ class View(TabManager,iterator):
         image=QtGui.QImage()
         image.loadFromData(image_data)
         if self.images.has_key(id):
-            self.getTab(self.images[id]).refreshImage(id,image)
+            tab = self.getTab(self.images[id])
+            self.imageLock.run(tab.refreshImage,id,image)
         else:
             reactor.callLater(10,self.loadedImage,id,image_data)
 

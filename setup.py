@@ -5,11 +5,12 @@ from distutils.core import setup
 import glob
 
 setup(name='rattlekekz-qt',
-      version='20100619',
+      version='20100620',
       author="Christian Scharkus",
       author_email="cscharkus[at]gmail[dot]com",
       packages=['rattlekekz.qtView','twisted.plugins'],
       py_modules=['qt4reactor'],
+      description="qt frontend for the rattlekekz chat client",
       scripts=['bin/rattlekekz-qt'],
       url="http://github.com/raubkopierer/rattlekekz-qt",
       license="GPL v3 or higher",
