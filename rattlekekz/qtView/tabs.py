@@ -195,14 +195,13 @@ class rattlekekzPrivTab(rattlekekzBaseTab):
         self.output.reload()
         html = self.output.toHtml()
         self.output.setHtml(html)
-        def setScrolls(vert,vertmax,hor,hormax):
-            if vert==vertmax:
-                vert=self.output.verticalScrollBar().maximum()
-            if hor==hormax and hor:
-                hor=self.output.horizontalScrollBar().maximum()
-            self.output.verticalScrollBar().setValue(vert)
-            self.output.horizontalScrollBar().setValue(hor)
-        reactor.callLater(0,setScrolls,v,vmax,h,hmax)
+        reactor.qApp.processEvents()
+        if v==vmax:
+            v=self.output.verticalScrollBar().maximum()
+        if h==hmax and h:
+            h=self.output.horizontalScrollBar().maximum()
+        self.output.verticalScrollBar().setValue(v)
+        self.output.horizontalScrollBar().setValue(h)
 
 class rattlekekzMsgTab(rattlekekzPrivTab):
     def __init__(self,parent=None,caller=None,room=None):

@@ -47,7 +47,7 @@ rev=search("\d+",revision).group()
 # klasse zu refaktoren. und hab bitte den anstand dann für jede klasse auch ne eigene datei zu machen.
 class View(TabManager,iterator):
     def __init__(self,controller):
-        self.name,self.version="rattlekekz-qt",20100505  # Diese Variablen werden vom View abgefragt
+        self.name,self.version="rattlekekz-qt",20100619  # Diese Variablen werden vom View abgefragt
         self.controller=controller
         self.revision=rev
         self.alert=app.alert
