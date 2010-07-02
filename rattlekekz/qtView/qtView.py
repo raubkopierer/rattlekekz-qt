@@ -211,7 +211,7 @@ class View(TabManager,iterator):
                     font[1].append("</b>")
                 if a == "italic":
                     font[0].append("<i>")
-                    font[0].append("</i>")
+                    font[1].append("</i>")
                 if a == "sb":
                     text[i]="<img src='"+"smilie://"+self.stringHandler(text[i])+".png' />"
                 if a == "button":
