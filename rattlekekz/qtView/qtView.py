@@ -48,7 +48,7 @@ rev=search("\d+",revision).group()
 # klasse zu refaktoren. und hab bitte den anstand dann für jede klasse auch ne eigene datei zu machen.
 class View(TabManager,iterator):
     def __init__(self,controller):
-        self.name,self.version="rattlekekz-qt",20100620  # Diese Variablen werden vom View abgefragt
+        self.name,self.version="rattlekekz-qt",20100806  # Diese Variablen werden vom View abgefragt
         self.controller=controller
         self.revision=rev
         self.alert=app.alert
@@ -335,11 +335,12 @@ class View(TabManager,iterator):
     def connectionFailed(self):
         self.status.showMessage("connection attempt failed")
 
-    def successLogin(self,nick,status,room):
+    def successLogin(self,nick,status,room,reconnected=False):
         self.nickname=nick
-        self.ShownRoom=room
         self.addTab(room,rattlekekzMsgTab)
-        self.changeTab(room)
+        if not reconnected:
+            self.ShownRoom=room
+            self.changeTab(room)
         try:
             self.delTab("$login")
         except:
